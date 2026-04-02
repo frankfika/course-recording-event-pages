@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>课程演示导航</title>
+  <style>
+    :root {
+      --bg: linear-gradient(135deg, #f6efe7 0%, #dce8f3 100%);
+      --card: rgba(255,255,255,0.76);
+      --text: #1f2937;
+      --muted: #5b6472;
+      --accent: #0f766e;
+      --accent-2: #155e75;
+      --border: rgba(15, 23, 42, 0.08);
+      --shadow: 0 20px 50px rgba(15, 23, 42, 0.12);
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: 'PingFang SC', 'Noto Sans SC', 'Microsoft YaHei', sans-serif;
+      color: var(--text);
+      background: var(--bg);
+      min-height: 100vh;
+    }
+    .wrap { max-width: 1080px; margin: 0 auto; padding: 64px 24px 80px; }
+    .hero { margin-bottom: 40px; }
+    .eyebrow {
+      display: inline-block; padding: 8px 14px; border-radius: 999px;
+      background: rgba(255,255,255,0.65); color: var(--accent-2); font-weight: 700;
+      letter-spacing: .08em; text-transform: uppercase; font-size: 12px;
+    }
+    h1 { font-size: clamp(2.2rem, 5vw, 4rem); margin: 18px 0 12px; }
+    .lead { font-size: 1.05rem; line-height: 1.8; color: var(--muted); max-width: 760px; }
+    .grid {
+      display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 18px;
+    }
+    .card {
+      display: block; text-decoration: none; color: inherit; background: var(--card);
+      border: 1px solid var(--border); border-radius: 24px; padding: 22px; box-shadow: var(--shadow);
+      backdrop-filter: blur(16px); transition: transform .25s ease, box-shadow .25s ease, border-color .25s ease;
+    }
+    .card:hover { transform: translateY(-6px); box-shadow: 0 28px 60px rgba(15, 23, 42, 0.18); border-color: rgba(21, 94, 117, 0.22); }
+    .num { font-size: .9rem; font-weight: 700; color: var(--accent); margin-bottom: 10px; }
+    .title { font-size: 1.15rem; font-weight: 800; line-height: 1.5; margin-bottom: 8px; }
+    .path { font-size: .92rem; color: var(--muted); word-break: break-word; }
+    footer { margin-top: 28px; color: var(--muted); font-size: .92rem; }
+  </style>
+</head>
+<body>
+  <main class="wrap">
+    <section class="hero">
+      <span class="eyebrow">GitHub Pages</span>
+      <h1>课程演示导航</h1>
+      <p class="lead">这里汇总了当前课程的 5 个章节演示页面。部署到 GitHub Pages 后，可直接把这一页作为课程总入口，再分发到各章节页面。</p>
+    </section>
+    <section class="grid">
+      <a class="card" href="./C1_chapter1/"><div class="num">01</div><div class="title">C1 · AI工具与核心概念</div><div class="path">./C1_chapter1/</div></a><a class="card" href="./C1_chapter2/"><div class="num">02</div><div class="title">C1 · Chapter 2 · AI核心概念一锅端</div><div class="path">./C1_chapter2/</div></a><a class="card" href="./C1_chapter3/"><div class="num">03</div><div class="title">C1 · Chapter 3 · 2026大模型擂台赛</div><div class="path">./C1_chapter3/</div></a><a class="card" href="./C1_chapter4/"><div class="num">04</div><div class="title">C1-4 · 我们应该怎么学习AI呢？</div><div class="path">./C1_chapter4/</div></a><a class="card" href="./C1_chapter5/"><div class="num">05</div><div class="title">C1-5 · 全栈架构 + 学习地图</div><div class="path">./C1_chapter5/</div></a>
+    </section>
+    <footer>生成目录：github-pages-course</footer>
+  </main>
+</body>
+</html>

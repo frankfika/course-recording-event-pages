@@ -1,0 +1,1278 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>C1 · Chapter 2 · AI核心概念一锅端</title>
+<style>
+  @font-face {
+    font-family: 'Noto Sans SC';
+    src: url('NotoSansSC.ttf') format('truetype');
+    font-weight: 100 900;
+  }
+
+  :root {
+    --bg: #FFFFFF;
+    --bg-page: #F8FAFC;
+    --bg-blue: #EFF6FF;
+    --bg-purple: #FDF4FF;
+    --bg-green: #ECFDF5;
+    --bg-pink: #FCE7F3;
+    --bg-gray: #F9FAFB;
+    --bg-dark: #111827;
+    --blue-500: #3B82F6;
+    --blue-600: #2563EB;
+    --blue-700: #1D4ED8;
+    --purple-500: #9333EA;
+    --pink-500: #DB2777;
+    --green-500: #059669;
+    --red-500: #EF4444;
+    --orange-500: #F97316;
+    --text-900: #111827;
+    --text-700: #374151;
+    --text-500: #6B7280;
+    --text-400: #9CA3AF;
+    --border: #E5E7EB;
+    --border-light: #F3F4F6;
+    --shadow-sm: 0 1px 2px rgba(0,0,0,0.05);
+    --shadow: 0 1px 3px rgba(0,0,0,0.08), 0 1px 2px rgba(0,0,0,0.04);
+    --shadow-md: 0 4px 6px -1px rgba(0,0,0,0.07), 0 2px 4px -2px rgba(0,0,0,0.05);
+    --shadow-lg: 0 10px 15px -3px rgba(0,0,0,0.06), 0 4px 6px -4px rgba(0,0,0,0.04);
+    --radius: 16px;
+    --radius-sm: 12px;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  html {
+    font-family: 'Noto Sans SC', -apple-system, 'SF Pro Display', BlinkMacSystemFont, sans-serif;
+    background: var(--bg-page);
+    color: var(--text-900);
+    scroll-behavior: smooth;
+    scroll-snap-type: y mandatory;
+    overflow-x: hidden;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .slide {
+    width: 100vw;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    scroll-snap-align: start;
+    position: relative;
+    overflow: hidden;
+    background: var(--bg);
+    padding: 40px 0;
+  }
+
+  .slide-inner {
+    width: min(1200px, 90vw);
+    position: relative;
+    z-index: 2;
+  }
+
+  h1 { font-size: clamp(2rem, 4.2vw, 3.5rem); font-weight: 800; line-height: 1.2; letter-spacing: -0.02em; color: var(--text-900); }
+  h2 { font-size: clamp(1.5rem, 2.8vw, 2.2rem); font-weight: 700; line-height: 1.25; letter-spacing: -0.01em; color: var(--text-900); }
+  h3 { font-size: clamp(1rem, 1.6vw, 1.25rem); font-weight: 600; line-height: 1.35; color: var(--text-900); }
+  p, li { font-size: clamp(0.85rem, 1.2vw, 1.05rem); line-height: 1.7; color: var(--text-500); }
+
+  .text-blue { color: var(--blue-600); }
+  .text-purple { color: var(--purple-500); }
+  .text-pink { color: var(--pink-500); }
+  .text-green { color: var(--green-500); }
+  .text-red { color: var(--red-500); }
+  .text-orange { color: var(--orange-500); }
+
+  .tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 5px 14px;
+    border-radius: 8px;
+    font-size: 0.78rem;
+    font-weight: 600;
+    letter-spacing: 0.02em;
+  }
+  .tag-blue { background: var(--bg-blue); color: var(--blue-600); }
+  .tag-purple { background: var(--bg-purple); color: var(--purple-500); }
+  .tag-green { background: var(--bg-green); color: var(--green-500); }
+  .tag-pink { background: var(--bg-pink); color: var(--pink-500); }
+  .tag-gray { background: var(--bg-gray); color: var(--text-500); }
+  .tag-dark { background: var(--bg-dark); color: white; }
+  .tag-red {
+    background: #FEE2E2;
+    color: var(--red-500);
+    animation: pulse-live 2s infinite;
+  }
+  .tag-red::before {
+    content: '';
+    width: 7px; height: 7px;
+    border-radius: 50%;
+    background: var(--red-500);
+    animation: blink 1.5s infinite;
+  }
+  @keyframes pulse-live {
+    0%, 100% { box-shadow: 0 0 0 0 rgba(239,68,68,0.2); }
+    50% { box-shadow: 0 0 0 6px rgba(239,68,68,0); }
+  }
+  @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0.3} }
+
+  .card {
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 24px;
+    box-shadow: var(--shadow-sm);
+    transition: all 0.25s ease;
+  }
+  .card:hover {
+    box-shadow: var(--shadow-md);
+    transform: translateY(-1px);
+  }
+
+  .card-grid { display: grid; gap: 16px; }
+  .card-grid-2 { grid-template-columns: repeat(2, 1fr); }
+  .card-grid-3 { grid-template-columns: repeat(3, 1fr); }
+
+  .num {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px; height: 36px;
+    border-radius: 10px;
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: white;
+    flex-shrink: 0;
+  }
+
+  .img-frame {
+    border-radius: var(--radius-sm);
+    overflow: hidden;
+    border: 1px solid var(--border);
+    background: var(--bg-gray);
+  }
+  .img-frame img {
+    width: 100%;
+    height: auto;
+    display: block;
+  }
+
+  .vs-container {
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    gap: 32px;
+    align-items: stretch;
+  }
+  .vs-divider {
+    width: 1px;
+    background: var(--border);
+    position: relative;
+  }
+  .vs-divider::after {
+    content: 'VS';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: var(--bg);
+    padding: 8px 6px;
+    font-size: 0.65rem;
+    font-weight: 800;
+    color: var(--text-400);
+    letter-spacing: 0.1em;
+  }
+
+  .compare-pair {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 24px;
+  }
+
+  .quote-bar {
+    position: relative;
+    padding-left: 28px;
+  }
+  .quote-bar::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 4px;
+    bottom: 4px;
+    width: 4px;
+    border-radius: 2px;
+    background: linear-gradient(to bottom, var(--blue-500), var(--purple-500));
+  }
+
+  .deco {
+    position: absolute;
+    border-radius: 50%;
+    opacity: 0.5;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .page-num {
+    position: absolute;
+    bottom: 24px;
+    right: 32px;
+    font-size: 0.72rem;
+    color: var(--text-400);
+    font-weight: 500;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .section-label {
+    position: absolute;
+    top: 28px;
+    right: 32px;
+    font-size: 0.72rem;
+    color: var(--text-400);
+    font-weight: 500;
+  }
+
+  .slide-nav {
+    position: fixed;
+    right: 16px;
+    top: 50%;
+    transform: translateY(-50%);
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    z-index: 100;
+  }
+  .slide-nav a {
+    width: 5px;
+    height: 5px;
+    border-radius: 50%;
+    background: var(--border);
+    transition: all 0.3s;
+    display: block;
+  }
+  .slide-nav a:hover,
+  .slide-nav a.active {
+    background: var(--blue-500);
+    transform: scale(1.6);
+  }
+
+  .stagger > * {
+    opacity: 0;
+    transform: translateY(16px);
+    animation: fadeUp 0.5s ease forwards;
+  }
+  .stagger > *:nth-child(1) { animation-delay: 0s; }
+  .stagger > *:nth-child(2) { animation-delay: 0.08s; }
+  .stagger > *:nth-child(3) { animation-delay: 0.14s; }
+  .stagger > *:nth-child(4) { animation-delay: 0.2s; }
+  .stagger > *:nth-child(5) { animation-delay: 0.25s; }
+  .stagger > *:nth-child(6) { animation-delay: 0.3s; }
+  @keyframes fadeUp {
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .script-block {
+    background: var(--bg-gray);
+    border: 1px solid var(--border-light);
+    border-radius: var(--radius-sm);
+    padding: 18px 22px;
+    font-size: 0.9rem;
+    color: var(--text-700);
+    line-height: 1.8;
+  }
+
+  .timeline {
+    display: flex;
+    align-items: flex-start;
+    gap: 0;
+    justify-content: center;
+    position: relative;
+  }
+  .timeline-step {
+    flex: 1;
+    text-align: center;
+    position: relative;
+    padding: 0 10px;
+  }
+  .timeline-step::after {
+    content: '';
+    position: absolute;
+    top: 26px;
+    right: 0;
+    width: calc(100% - 52px);
+    height: 2px;
+    background: linear-gradient(90deg, var(--blue-500), var(--purple-500));
+    transform: translateX(50%);
+    opacity: 0.3;
+  }
+  .timeline-step:last-child::after { display: none; }
+  .timeline-icon {
+    width: 52px; height: 52px;
+    border-radius: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.4rem;
+    margin: 0 auto 10px;
+    position: relative;
+    z-index: 2;
+  }
+
+  .pill {
+    display: inline-block;
+    padding: 7px 16px;
+    border-radius: 10px;
+    font-size: 0.82rem;
+    font-weight: 600;
+    border: 1px solid var(--border);
+    background: var(--bg);
+    color: var(--text-700);
+    box-shadow: var(--shadow-sm);
+  }
+
+  @media (max-width: 768px) {
+    .card-grid-2, .card-grid-3 { grid-template-columns: 1fr; }
+    .vs-container { grid-template-columns: 1fr; }
+    .vs-divider { width: 100%; height: 1px; }
+    .compare-pair { grid-template-columns: 1fr; }
+    .timeline { flex-direction: column; gap: 14px; }
+    .timeline-step::after { display: none; }
+  }
+</style>
+</head>
+<body>
+
+<nav class="slide-nav" id="slideNav"></nav>
+
+<!-- ==================== S1: COVER ==================== -->
+<section class="slide" id="s1" style="background: var(--bg-blue);">
+  <div class="deco" style="width:400px;height:400px;background:rgba(59,130,246,0.08);top:-100px;right:-80px;"></div>
+  <div class="deco" style="width:300px;height:300px;background:rgba(147,51,234,0.06);bottom:-60px;left:-60px;"></div>
+  <div class="slide-inner stagger" style="text-align:center;">
+    <div style="margin-bottom:28px;">
+      <img src="images/slide1_图片_13.png" alt="Logo" style="height:44px;">
+    </div>
+    <div style="display:inline-flex;align-items:center;gap:12px;background:white;padding:10px 28px;border-radius:100px;box-shadow:var(--shadow);margin-bottom:28px;">
+      <span style="background:var(--blue-500);color:white;padding:4px 14px;border-radius:8px;font-size:1.2rem;font-weight:800;">C1</span>
+      <span style="font-size:0.9rem;font-weight:600;color:var(--text-700);">必修 · 5节</span>
+    </div>
+    <h1 style="font-size:clamp(2.5rem,5.5vw,4rem);margin-bottom:16px;color:var(--text-900);">
+      AI工具与核心概念
+    </h1>
+    <p style="font-size:clamp(1rem,1.6vw,1.3rem);color:var(--text-500);margin-bottom:40px;">
+      从零建立对AI的完整认知
+    </p>
+    <p style="font-size:0.95rem;color:var(--text-700);font-weight:500;">
+      讲师：陈放
+    </p>
+  </div>
+  <span class="page-num">01 / 23</span>
+</section>
+
+<!-- ==================== S2: CHAPTER TITLE ==================== -->
+<section class="slide" id="s2" style="background:url('images/slide2_Image_0.png') center/cover no-repeat;position:relative;">
+  <div style="position:absolute;inset:0;background:rgba(0,0,0,0.45);"></div>
+  <div class="slide-inner stagger" style="text-align:center;position:relative;z-index:2;">
+    <div style="margin-bottom:24px;">
+      <span class="tag" style="font-size:0.9rem;padding:8px 24px;letter-spacing:0.1em;background:rgba(255,255,255,0.15);color:white;backdrop-filter:blur(8px);">CHAPTER 2</span>
+    </div>
+    <h1 style="font-size:clamp(2rem,4.5vw,3.2rem);margin-bottom:16px;color:white;">
+      AI核心概念一锅端
+    </h1>
+    <p style="font-size:clamp(1rem,1.5vw,1.2rem);color:rgba(255,255,255,0.8);">
+      AI已经开始替你上班
+    </p>
+  </div>
+  <span class="page-num" style="color:rgba(255,255,255,0.6);">02 / 23</span>
+</section>
+
+<!-- ==================== S3: 请思考 ==================== -->
+<section class="slide" id="s3">
+  <div class="deco" style="width:400px;height:400px;background:rgba(59,130,246,0.04);bottom:-80px;left:-80px;"></div>
+  <div class="slide-inner stagger" style="max-width:900px;">
+    <div style="text-align:center;margin-bottom:12px;">
+      <span style="font-size:3.5rem;color:var(--blue-500);opacity:0.15;font-weight:900;">?</span>
+    </div>
+    <h2 style="text-align:center;margin-bottom:8px;">请思考</h2>
+    <p style="text-align:center;margin-bottom:32px;font-size:1.1rem;color:var(--text-700);">上节课的震撼，你记住了几个？</p>
+    <div class="card-grid" style="grid-template-columns:repeat(5,1fr);max-width:1000px;margin:0 auto;">
+      <div class="card" style="text-align:center;border-top:3px solid var(--blue-500);padding:20px 14px;">
+        <div style="font-size:1.8rem;margin-bottom:10px;color:var(--green-500);">✓</div>
+        <h3 style="font-size:0.95rem;margin-bottom:4px;">写</h3>
+        <p style="font-size:0.82rem;">交付文档包</p>
+      </div>
+      <div class="card" style="text-align:center;border-top:3px solid var(--purple-500);padding:20px 14px;">
+        <div style="font-size:1.8rem;margin-bottom:10px;color:var(--green-500);">✓</div>
+        <h3 style="font-size:0.95rem;margin-bottom:4px;">画</h3>
+        <p style="font-size:0.82rem;">海报一次成型</p>
+      </div>
+      <div class="card" style="text-align:center;border-top:3px solid var(--pink-500);padding:20px 14px;">
+        <div style="font-size:1.8rem;margin-bottom:10px;color:var(--green-500);">✓</div>
+        <h3 style="font-size:0.95rem;margin-bottom:4px;">拍</h3>
+        <p style="font-size:0.82rem;">15秒成片</p>
+      </div>
+      <div class="card" style="text-align:center;border-top:3px solid var(--green-500);padding:20px 14px;">
+        <div style="font-size:1.8rem;margin-bottom:10px;color:var(--green-500);">✓</div>
+        <h3 style="font-size:0.95rem;margin-bottom:4px;">看</h3>
+        <p style="font-size:0.82rem;">实时理解屏幕</p>
+      </div>
+      <div class="card" style="text-align:center;border-top:3px solid var(--orange-500);padding:20px 14px;">
+        <div style="font-size:1.8rem;margin-bottom:10px;color:var(--green-500);">✓</div>
+        <h3 style="font-size:0.95rem;margin-bottom:4px;">编程</h3>
+        <p style="font-size:0.82rem;">不写代码做网页</p>
+      </div>
+    </div>
+  </div>
+  <span class="page-num">03 / 23</span>
+</section>
+
+<!-- ==================== S4: 知其然 ==================== -->
+<section class="slide" id="s4" style="background:linear-gradient(135deg, #EFF6FF 0%, #FDF4FF 100%);">
+  <div class="deco" style="width:500px;height:500px;background:rgba(59,130,246,0.05);top:-150px;left:-100px;"></div>
+  <div class="slide-inner stagger" style="text-align:center;max-width:850px;">
+    <div class="quote-bar" style="text-align:left;margin-bottom:32px;">
+      <h1 style="font-size:clamp(1.5rem,3.2vw,2.5rem);line-height:1.55;color:var(--text-900);">
+        知其然，知其所以然;
+      </h1>
+    </div>
+    <p style="font-size:clamp(1rem,1.5vw,1.3rem);color:var(--text-700);">
+      想要真的用好AI，你还得了解一下基础概念！
+    </p>
+  </div>
+  <span class="page-num">04 / 23</span>
+</section>
+
+<!-- ==================== S5: 先看地图，再走路 ==================== -->
+<section class="slide" id="s5">
+  <div class="slide-inner stagger">
+    <span class="tag tag-blue" style="margin-bottom:10px;">概念全景</span>
+    <h2 style="margin-bottom:32px;">先看地图，再走路</h2>
+    <div style="margin-bottom:24px;">
+      <div class="timeline">
+        <div class="timeline-step">
+          <div class="timeline-icon" style="background:var(--bg-blue);">
+            <img src="images/slide5_Image_0.png" alt="大模型" style="width:28px;height:28px;object-fit:contain;">
+          </div>
+          <h3 style="font-size:0.9rem;">大模型</h3>
+          <p style="font-size:0.78rem;">核心引擎</p>
+        </div>
+        <div class="timeline-step">
+          <div class="timeline-icon" style="background:var(--bg-green);">
+            <img src="images/slide5_Image_1.png" alt="Token" style="width:28px;height:28px;object-fit:contain;">
+          </div>
+          <h3 style="font-size:0.9rem;">Token</h3>
+          <p style="font-size:0.78rem;">语言单位</p>
+        </div>
+        <div class="timeline-step">
+          <div class="timeline-icon" style="background:var(--bg-purple);">
+            <img src="images/slide5_Image_2.png" alt="Prompt" style="width:28px;height:28px;object-fit:contain;">
+          </div>
+          <h3 style="font-size:0.9rem;">Prompt</h3>
+          <p style="font-size:0.78rem;">对话方式</p>
+        </div>
+        <div class="timeline-step">
+          <div class="timeline-icon" style="background:var(--bg-pink);">
+            <img src="images/slide5_Image_3.png" alt="Agent" style="width:28px;height:28px;object-fit:contain;">
+          </div>
+          <h3 style="font-size:0.9rem;">Agent</h3>
+          <p style="font-size:0.78rem;">干活形态</p>
+        </div>
+      </div>
+    </div>
+    <div>
+      <div class="timeline">
+        <div class="timeline-step">
+          <div class="timeline-icon" style="background:var(--bg-blue);">
+            <img src="images/slide5_Image_4.png" alt="RAG" style="width:28px;height:28px;object-fit:contain;">
+          </div>
+          <h3 style="font-size:0.9rem;">RAG</h3>
+          <p style="font-size:0.78rem;">加知识</p>
+        </div>
+        <div class="timeline-step">
+          <div class="timeline-icon" style="background:var(--bg-green);">
+            <img src="images/slide5_Image_5.png" alt="微调" style="width:28px;height:28px;object-fit:contain;">
+          </div>
+          <h3 style="font-size:0.9rem;">微调</h3>
+          <p style="font-size:0.78rem;">加技能</p>
+        </div>
+        <div class="timeline-step">
+          <div class="timeline-icon" style="background:var(--bg-purple);">
+            <img src="images/slide5_Image_6.png" alt="MCP" style="width:28px;height:28px;object-fit:contain;">
+          </div>
+          <h3 style="font-size:0.9rem;">MCP</h3>
+          <p style="font-size:0.78rem;">装接口</p>
+        </div>
+      </div>
+    </div>
+  </div>
+  <span class="page-num">05 / 23</span>
+</section>
+
+<!-- ==================== S6: 大模型 ==================== -->
+<section class="slide" id="s6">
+  <div class="slide-inner stagger">
+    <span class="tag tag-blue" style="margin-bottom:10px;">核心概念</span>
+    <h2 style="margin-bottom:24px;">大模型 = 看过海量文本的<span class="text-blue">超级学霸</span></h2>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:28px;align-items:center;">
+      <div>
+        <div style="display:flex;flex-direction:column;gap:14px;">
+          <div style="display:flex;align-items:center;gap:12px;">
+            <div class="num" style="background:var(--blue-500);">1</div>
+            <p style="color:var(--text-900);font-weight:500;font-size:1rem;">看过海量百科、新闻和论坛内容</p>
+          </div>
+          <div style="display:flex;align-items:center;gap:12px;">
+            <div class="num" style="background:var(--purple-500);">2</div>
+            <p style="color:var(--text-900);font-weight:500;font-size:1rem;">见过大量代码和技术文档</p>
+          </div>
+          <div style="display:flex;align-items:center;gap:12px;">
+            <div class="num" style="background:var(--pink-500);">3</div>
+            <p style="color:var(--text-900);font-weight:500;font-size:1rem;">学过很多书里的表达方式</p>
+          </div>
+          <div style="display:flex;align-items:center;gap:12px;">
+            <div class="num" style="background:var(--green-500);">4</div>
+            <p style="color:var(--text-900);font-weight:500;font-size:1rem;">擅长从海量文本里总结模式</p>
+          </div>
+        </div>
+        <div class="quote-bar" style="margin-top:24px;">
+          <p style="color:var(--text-700);font-weight:600;font-size:0.95rem;">但它不是真的理解——它学到的，本质上是语言的模式</p>
+        </div>
+      </div>
+      <div class="img-frame">
+        <img src="images/slide6_图片_42.jpg" alt="大模型示意" style="width:100%;height:auto;display:block;max-height:340px;object-fit:contain;">
+      </div>
+    </div>
+  </div>
+  <span class="page-num">06 / 23</span>
+</section>
+
+<!-- ==================== S7: 下一词预测 ==================== -->
+<section class="slide" id="s7" style="background:var(--bg-page);">
+  <div class="slide-inner stagger" style="max-width:850px;">
+    <span class="tag tag-purple" style="margin-bottom:10px;">原理揭秘</span>
+    <h2 style="margin-bottom:32px;">它不是在"思考"——它更像在做<span class="text-blue">下一词预测</span></h2>
+    <div class="card" style="text-align:center;padding:36px;margin-bottom:24px;">
+      <p style="font-size:1.8rem;font-weight:700;color:var(--text-900);margin-bottom:28px;">"今天天气真____"</p>
+      <div style="display:flex;justify-content:center;gap:20px;flex-wrap:wrap;">
+        <div style="padding:14px 28px;border-radius:var(--radius-sm);background:var(--bg-blue);border:2px solid var(--blue-500);">
+          <span style="font-size:1.3rem;font-weight:800;color:var(--blue-600);">好</span>
+          <span style="display:block;font-size:0.8rem;color:var(--blue-500);font-weight:600;margin-top:4px;">68%</span>
+        </div>
+        <div style="padding:14px 28px;border-radius:var(--radius-sm);background:var(--bg-purple);border:2px solid transparent;">
+          <span style="font-size:1.3rem;font-weight:800;color:var(--purple-500);">热</span>
+          <span style="display:block;font-size:0.8rem;color:var(--purple-500);font-weight:600;margin-top:4px;">22%</span>
+        </div>
+        <div style="padding:14px 28px;border-radius:var(--radius-sm);background:var(--bg-gray);border:2px solid transparent;">
+          <span style="font-size:1.3rem;font-weight:800;color:var(--text-700);">冷</span>
+          <span style="display:block;font-size:0.8rem;color:var(--text-500);font-weight:600;margin-top:4px;">10%</span>
+        </div>
+      </div>
+    </div>
+    <div class="quote-bar">
+      <p style="color:var(--text-700);font-weight:600;font-size:1.05rem;">它每次只做一件事：在已有文字之后，选出最可能的下一个词</p>
+    </div>
+  </div>
+  <span class="page-num">07 / 23</span>
+</section>
+
+<!-- ==================== S8: 该关心的4件事 ==================== -->
+<section class="slide" id="s8">
+  <div class="slide-inner stagger">
+    <span class="tag tag-blue" style="margin-bottom:10px;">实用指南</span>
+    <h2 style="margin-bottom:24px;">别被参数吓住了——你真正该关心的是这<span class="text-blue">4件事</span></h2>
+    <div class="card-grid card-grid-2">
+      <div class="card" style="border-top:3px solid var(--blue-500);">
+        <div style="display:flex;align-items:center;gap:14px;margin-bottom:10px;">
+          <img src="images/slide8_Image_0.png" alt="" style="width:36px;height:36px;object-fit:contain;">
+          <h3>推理强不强</h3>
+        </div>
+        <p>逻辑链条是否完整、结论是否可靠</p>
+      </div>
+      <div class="card" style="border-top:3px solid var(--purple-500);">
+        <div style="display:flex;align-items:center;gap:14px;margin-bottom:10px;">
+          <img src="images/slide8_Image_1.png" alt="" style="width:36px;height:36px;object-fit:contain;">
+          <h3>多模态行不行</h3>
+        </div>
+        <p>能不能同时处理文字、图片、视频</p>
+      </div>
+      <div class="card" style="border-top:3px solid var(--green-500);">
+        <div style="display:flex;align-items:center;gap:14px;margin-bottom:10px;">
+          <img src="images/slide8_Image_2.png" alt="" style="width:36px;height:36px;object-fit:contain;">
+          <h3>会不会调工具</h3>
+        </div>
+        <p>能不能连接外部系统完成任务</p>
+      </div>
+      <div class="card" style="border-top:3px solid var(--orange-500);">
+        <div style="display:flex;align-items:center;gap:14px;margin-bottom:10px;">
+          <img src="images/slide8_Image_3.png" alt="" style="width:36px;height:36px;object-fit:contain;">
+          <h3>成本和速度</h3>
+        </div>
+        <p>响应快不快、费用扛不扛得住</p>
+      </div>
+    </div>
+  </div>
+  <span class="page-num">08 / 23</span>
+</section>
+
+<!-- ==================== S9: Token ==================== -->
+<section class="slide" id="s9">
+  <div class="slide-inner stagger">
+    <span class="tag tag-green" style="margin-bottom:10px;">核心概念</span>
+    <h2 style="margin-bottom:28px;">Token = AI处理语言时的<span class="text-blue">一小口信息</span></h2>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:28px;align-items:start;">
+      <div>
+        <div style="display:flex;flex-direction:column;gap:16px;margin-bottom:28px;">
+          <div class="card" style="padding:16px 20px;">
+            <div style="display:flex;align-items:center;gap:12px;margin-bottom:6px;">
+              <span style="padding:6px 14px;border-radius:8px;background:var(--bg-blue);color:var(--blue-600);font-weight:700;font-size:1.1rem;">你</span>
+              <span style="padding:6px 14px;border-radius:8px;background:var(--bg-purple);color:var(--purple-500);font-weight:700;font-size:1.1rem;">好</span>
+            </div>
+            <p style="font-size:0.85rem;">"你好" → 1~2 Token</p>
+          </div>
+          <div class="card" style="padding:16px 20px;">
+            <div style="display:flex;align-items:center;gap:12px;margin-bottom:6px;">
+              <span style="padding:6px 14px;border-radius:8px;background:var(--bg-green);color:var(--green-500);font-weight:700;font-size:1.1rem;">Hello</span>
+            </div>
+            <p style="font-size:0.85rem;">"Hello" → 1 Token</p>
+          </div>
+          <div class="card" style="padding:16px 20px;">
+            <div style="display:flex;align-items:center;gap:12px;margin-bottom:6px;">
+              <span style="padding:6px 14px;border-radius:8px;background:var(--bg-pink);color:var(--pink-500);font-weight:700;font-size:1.1rem;">人工</span>
+              <span style="padding:6px 14px;border-radius:8px;background:var(--bg-pink);color:var(--pink-500);font-weight:700;font-size:1.1rem;">智能</span>
+            </div>
+            <p style="font-size:0.85rem;">"人工智能" → 2~3 Token</p>
+          </div>
+        </div>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:16px;">
+        <div class="card" style="border-top:3px solid var(--orange-500);">
+          <div style="font-size:1.5rem;margin-bottom:8px;">$</div>
+          <h3 style="margin-bottom:4px;">Token 决定价格</h3>
+          <p>用得越多，花得越多</p>
+        </div>
+        <div class="card" style="border-top:3px solid var(--blue-500);">
+          <div style="font-size:1.5rem;margin-bottom:8px;">🧠</div>
+          <h3 style="margin-bottom:4px;">Token 决定记忆力</h3>
+          <p>上下文窗口有限</p>
+        </div>
+        <div style="text-align:center;margin-top:8px;">
+          <a href="https://www.toolsnak.com/en/ai-token-counter" style="color:var(--blue-500);text-decoration:none;font-weight:600;font-size:0.9rem;">🔗 Tokenizer 在线工具</a>
+        </div>
+      </div>
+    </div>
+  </div>
+  <span class="page-num">09 / 23</span>
+</section>
+
+<!-- ==================== S10: LIVE DEMO ==================== -->
+<section class="slide" id="s10" style="background:var(--bg-page);">
+  <div class="slide-inner stagger" style="max-width:780px;">
+    <div style="margin-bottom:14px;"><span class="tag tag-red">LIVE DEMO</span></div>
+    <h2 style="margin-bottom:24px;">现场演示：同一个问题，不同模型的答案</h2>
+    <div style="display:flex;flex-direction:column;gap:14px;margin-bottom:24px;">
+      <div class="card" style="padding:16px 20px;">
+        <h3 style="margin-bottom:8px;font-size:0.8rem;color:var(--text-400);letter-spacing:0.08em;text-transform:uppercase;">需求原文</h3>
+        <p style="color:var(--text-900);font-weight:500;font-size:0.95rem;">我现在要给同学讲解什么是大模型，请用通俗易懂的语言来描述，不超过200字</p>
+      </div>
+      <div class="card" style="padding:16px 20px;">
+        <p style="color:var(--text-900);font-weight:500;font-size:0.95rem;">请计算下 10+20 = 多少？</p>
+      </div>
+      <div class="card" style="padding:16px 20px;">
+        <p style="color:var(--text-900);font-weight:500;font-size:0.95rem;">翻译：我想去隔壁咖啡馆买一杯拿铁咖啡</p>
+      </div>
+    </div>
+    <div class="quote-bar">
+      <p style="color:var(--text-700);font-weight:600;font-size:1.05rem;">你真的需要最好的大模型吗？</p>
+    </div>
+    <a href="https://cloud.siliconflow.cn/me/playground/chat/17885303129" target="_blank" rel="noopener" style="display:inline-flex;align-items:center;gap:8px;margin-top:18px;padding:12px 24px;background:var(--blue-500,#3B82F6);color:#fff;border-radius:10px;font-weight:600;font-size:0.95rem;text-decoration:none;transition:background .2s;">
+      🚀 打开硅基流动 Playground 测试
+      <span style="font-size:0.85rem;opacity:0.8;">→</span>
+    </a>
+  </div>
+  <span class="page-num">10 / 23</span>
+</section>
+
+<!-- ==================== S11: 你怎么问 ==================== -->
+<section class="slide" id="s11" style="background:linear-gradient(135deg, #EFF6FF 0%, #FDF4FF 100%);">
+  <div class="deco" style="width:500px;height:500px;background:rgba(59,130,246,0.05);top:-150px;left:-100px;"></div>
+  <div class="slide-inner stagger" style="text-align:center;max-width:850px;">
+    <h1 style="font-size:clamp(1.7rem,3.5vw,2.6rem);line-height:1.55;color:var(--text-900);">
+      "你怎么问，决定AI怎么答"
+    </h1>
+  </div>
+  <span class="page-num">11 / 23</span>
+</section>
+
+<!-- ==================== S12: 好Prompt vs 坏Prompt ==================== -->
+<section class="slide" id="s12">
+  <div class="slide-inner stagger">
+    <span class="tag tag-purple" style="margin-bottom:10px;">Prompt</span>
+    <h2 style="margin-bottom:24px;">同一个任务，好Prompt vs 坏Prompt</h2>
+    <div class="vs-container">
+      <div class="card" style="background:#FEF2F2;border-color:#FECACA;">
+        <div style="text-align:center;margin-bottom:14px;">
+          <span class="tag" style="background:#FEE2E2;color:var(--red-500);font-size:0.85rem;font-weight:700;">BAD</span>
+        </div>
+        <div class="script-block" style="background:white;margin-bottom:14px;">
+          "帮我写一篇文章，主题是一个胡同里的面馆"
+        </div>
+        <p style="text-align:center;color:var(--red-500);font-weight:600;font-size:0.85rem;">没有角色、没有上下文、没有格式要求</p>
+      </div>
+      <div class="vs-divider"></div>
+      <div class="card" style="background:#F0FDF4;border-color:#BBF7D0;">
+        <div style="text-align:center;margin-bottom:14px;">
+          <span class="tag" style="background:#D1FAE5;color:var(--green-500);font-size:0.85rem;font-weight:700;">GOOD</span>
+        </div>
+        <div class="script-block" style="background:white;margin-bottom:14px;font-size:0.82rem;">
+          你是一位小红书美食博主，文风活泼有趣。请写一篇300字探店笔记，主题是一家隐藏在胡同里的面馆，要求：开头用悬念吸引人，中间写3个菜品亮点，结尾给出推荐星级。
+        </div>
+        <p style="text-align:center;color:var(--green-500);font-weight:600;font-size:0.85rem;">有角色、有上下文、有格式</p>
+      </div>
+    </div>
+  </div>
+  <span class="page-num">12 / 23</span>
+</section>
+
+<!-- ==================== S13: RTCFE ==================== -->
+<section class="slide" id="s13">
+  <div class="slide-inner stagger">
+    <span class="tag tag-blue" style="margin-bottom:10px;">Prompt框架</span>
+    <h2 style="margin-bottom:24px;">Prompt五要素：<span class="text-blue">RTCFE</span></h2>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:24px;">
+      <div>
+        <div style="display:flex;flex-direction:column;gap:12px;margin-bottom:20px;">
+          <div class="card" style="padding:14px 18px;border-left:4px solid var(--blue-500);">
+            <div style="display:flex;align-items:center;gap:10px;">
+              <span style="background:var(--blue-500);color:white;width:32px;height:32px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:0.9rem;">R</span>
+              <div>
+                <h3 style="font-size:0.9rem;">Role</h3>
+                <p style="font-size:0.78rem;">角色设定</p>
+              </div>
+            </div>
+          </div>
+          <div class="card" style="padding:14px 18px;border-left:4px solid var(--purple-500);">
+            <div style="display:flex;align-items:center;gap:10px;">
+              <span style="background:var(--purple-500);color:white;width:32px;height:32px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:0.9rem;">T</span>
+              <div>
+                <h3 style="font-size:0.9rem;">Task</h3>
+                <p style="font-size:0.78rem;">具体任务</p>
+              </div>
+            </div>
+          </div>
+          <div class="card" style="padding:14px 18px;border-left:4px solid var(--green-500);">
+            <div style="display:flex;align-items:center;gap:10px;">
+              <span style="background:var(--green-500);color:white;width:32px;height:32px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:0.9rem;">C</span>
+              <div>
+                <h3 style="font-size:0.9rem;">Context</h3>
+                <p style="font-size:0.78rem;">背景信息</p>
+              </div>
+            </div>
+          </div>
+          <div class="card" style="padding:14px 18px;border-left:4px solid var(--pink-500);">
+            <div style="display:flex;align-items:center;gap:10px;">
+              <span style="background:var(--pink-500);color:white;width:32px;height:32px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:0.9rem;">F</span>
+              <div>
+                <h3 style="font-size:0.9rem;">Format</h3>
+                <p style="font-size:0.78rem;">输出格式</p>
+              </div>
+            </div>
+          </div>
+          <div class="card" style="padding:14px 18px;border-left:4px solid var(--orange-500);">
+            <div style="display:flex;align-items:center;gap:10px;">
+              <span style="background:var(--orange-500);color:white;width:32px;height:32px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:0.9rem;">E</span>
+              <div>
+                <h3 style="font-size:0.9rem;">Examples</h3>
+                <p style="font-size:0.78rem;">示例参考</p>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="quote-bar">
+          <p style="color:var(--text-700);font-weight:600;font-size:0.9rem;">框架的本质就是帮你把话说清楚！</p>
+        </div>
+      </div>
+      <div class="card" style="padding:20px;background:var(--bg-gray);">
+        <h3 style="margin-bottom:14px;font-size:0.8rem;color:var(--text-400);letter-spacing:0.08em;text-transform:uppercase;">提示词案例：小红书文案生成</h3>
+        <div style="display:flex;flex-direction:column;gap:12px;font-size:0.82rem;line-height:1.7;color:var(--text-700);">
+          <div>
+            <p style="color:var(--blue-600);font-weight:700;margin-bottom:2px;">【R - Role】</p>
+            <p>你是一位资深的小红书内容运营专家，擅长写爆款笔记，熟悉年轻人喜欢的表达方式。</p>
+          </div>
+          <div>
+            <p style="color:var(--purple-500);font-weight:700;margin-bottom:2px;">【T - Task】</p>
+            <p>请为一款新上市的"降噪蓝牙耳机"写一篇种草文案。</p>
+          </div>
+          <div>
+            <p style="color:var(--green-500);font-weight:700;margin-bottom:2px;">【C - Context】</p>
+            <p>- 目标用户：25-35岁上班族，经常通勤、需要专注工作<br>- 产品卖点：主动降噪、续航30小时、佩戴舒适、音质清晰<br>- 调性要求：真实分享感，不硬广，多用emoji，语气亲切</p>
+          </div>
+          <div>
+            <p style="color:var(--pink-500);font-weight:700;margin-bottom:2px;">【F - Format】</p>
+            <p>1. 标题（15字以内，带emoji）<br>2. 正文（150-200字，分段落）<br>3. 标签（5个相关话题标签）</p>
+          </div>
+          <div>
+            <p style="color:var(--orange-500);font-weight:700;margin-bottom:2px;">【E - Example】</p>
+            <p>参考风格：<br>"绝了！这个耳机让我地铁上也能专心听歌🎵<br>通勤党真的太难了...直到我遇到它！<br>降噪效果yyds，地铁轰鸣声直接消失✨"</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <span class="page-num">13 / 23</span>
+</section>
+
+<!-- ==================== S14: Agent ==================== -->
+<section class="slide" id="s14">
+  <div class="slide-inner stagger" style="max-width:950px;">
+    <span class="tag tag-pink" style="margin-bottom:10px;">核心概念</span>
+    <h2 style="margin-bottom:32px;">"Prompt让AI说得好，Agent让AI<span class="text-blue">做得到</span>"</h2>
+    <div class="vs-container">
+      <div class="card" style="text-align:center;">
+        <div style="font-size:2.5rem;margin-bottom:14px;">💬</div>
+        <h3 style="margin-bottom:10px;font-size:1.1rem;">聊天AI = 嘴</h3>
+        <p style="margin-bottom:6px;">能说、能写、能分析</p>
+        <p style="color:var(--red-500);font-weight:600;font-size:0.85rem;">但不能动手操作</p>
+      </div>
+      <div class="vs-divider"></div>
+      <div class="card" style="text-align:center;">
+        <div style="font-size:2.5rem;margin-bottom:14px;">✋</div>
+        <h3 style="margin-bottom:10px;font-size:1.1rem;">Agent = 手脚</h3>
+        <p style="margin-bottom:6px;">能操作工具、执行任务</p>
+        <p style="color:var(--blue-600);font-weight:600;font-size:0.85rem;">感知 → 思考 → 行动 → 记忆</p>
+      </div>
+    </div>
+  </div>
+  <span class="page-num">14 / 23</span>
+</section>
+
+<!-- ==================== S15: Agent实例 ==================== -->
+<section class="slide" id="s15">
+  <div class="slide-inner stagger">
+    <span class="tag tag-blue" style="margin-bottom:10px;">Agent实战</span>
+    <h2 style="margin-bottom:28px;">Agent能做什么？用"<span class="text-blue">订高铁+开发票</span>"看懂</h2>
+    <div class="vs-container">
+      <div class="card" style="background:var(--bg-gray);border-color:var(--border-light);">
+        <div style="text-align:center;margin-bottom:18px;">
+          <span style="font-size:0.72rem;font-weight:700;color:var(--text-400);letter-spacing:0.1em;text-transform:uppercase;">传统聊天AI</span>
+        </div>
+        <div class="script-block" style="margin-bottom:14px;font-size:0.9rem;">
+          "帮我订一张明早去上海的高铁"
+        </div>
+        <div style="padding:12px 16px;border-radius:10px;background:#FEE2E2;margin-bottom:10px;">
+          <p style="color:var(--red-500);font-weight:500;font-size:0.9rem;">"你可以去12306查询并下单..."</p>
+        </div>
+        <p style="text-align:center;font-size:0.82rem;color:var(--text-400);">（只能告诉你怎么做）</p>
+      </div>
+      <div class="vs-divider"></div>
+      <div class="card" style="background:var(--bg-green);border-color:#BBF7D0;">
+        <div style="text-align:center;margin-bottom:18px;">
+          <span style="font-size:0.72rem;font-weight:700;color:var(--text-400);letter-spacing:0.1em;text-transform:uppercase;">Agent</span>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:12px;">
+          <div style="display:flex;align-items:center;gap:12px;">
+            <div class="num" style="background:var(--blue-500);">1</div>
+            <p style="color:var(--text-900);font-weight:500;">搜索所有车次和价格</p>
+          </div>
+          <div style="display:flex;align-items:center;gap:12px;">
+            <div class="num" style="background:var(--purple-500);">2</div>
+            <p style="color:var(--text-900);font-weight:500;">按你的时间偏好筛选排序</p>
+          </div>
+          <div style="display:flex;align-items:center;gap:12px;">
+            <div class="num" style="background:var(--green-500);">3</div>
+            <p style="color:var(--text-900);font-weight:500;">完成下单并同步行程</p>
+          </div>
+          <div style="display:flex;align-items:center;gap:12px;">
+            <div class="num" style="background:var(--pink-500);">4</div>
+            <p style="color:var(--text-900);font-weight:500;">提醒你及时开发票</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <span class="page-num">15 / 23</span>
+</section>
+
+<!-- ==================== S16: 变成Agent需要什么 ==================== -->
+<section class="slide" id="s16" style="background:linear-gradient(135deg, #EFF6FF 0%, #FDF4FF 100%);">
+  <div class="deco" style="width:500px;height:500px;background:rgba(59,130,246,0.05);top:-150px;left:-100px;"></div>
+  <div class="slide-inner stagger" style="text-align:center;max-width:850px;">
+    <h1 style="font-size:clamp(1.7rem,3.5vw,2.6rem);line-height:1.55;color:var(--text-900);">
+      变成AI Agent，需要点什么？
+    </h1>
+  </div>
+  <span class="page-num">16 / 23</span>
+</section>
+
+<!-- ==================== S17: RAG ==================== -->
+<section class="slide" id="s17">
+  <div class="slide-inner stagger">
+    <span class="tag tag-green" style="margin-bottom:10px;">核心概念</span>
+    <h2 style="margin-bottom:28px;">RAG = 给AI配一个会检索的<span class="text-blue">图书馆</span></h2>
+    <div class="timeline" style="margin-bottom:28px;">
+      <div class="timeline-step">
+        <div class="timeline-icon" style="background:var(--bg-blue);">
+          <img src="images/slide17_Image_2.png" alt="检索" style="width:28px;height:28px;object-fit:contain;">
+        </div>
+        <h3 style="font-size:0.95rem;">检索</h3>
+        <p style="font-size:0.78rem;">Retrieval</p>
+      </div>
+      <div class="timeline-step">
+        <div class="timeline-icon" style="background:var(--bg-purple);">
+          <img src="images/slide17_Image_0.png" alt="增强" style="width:28px;height:28px;object-fit:contain;">
+        </div>
+        <h3 style="font-size:0.95rem;">增强</h3>
+        <p style="font-size:0.78rem;">Augmentation</p>
+      </div>
+      <div class="timeline-step">
+        <div class="timeline-icon" style="background:var(--bg-green);">
+          <img src="images/slide17_Image_1.png" alt="生成" style="width:28px;height:28px;object-fit:contain;">
+        </div>
+        <h3 style="font-size:0.95rem;">生成</h3>
+        <p style="font-size:0.78rem;">Generation</p>
+      </div>
+    </div>
+    <div class="quote-bar" style="margin-bottom:24px;">
+      <p style="color:var(--text-700);font-weight:600;font-size:0.95rem;">类比：开卷考试。模型本身是学霸，RAG让它带着参考书答题。</p>
+    </div>
+    <div class="card-grid card-grid-3">
+      <div class="card" style="border-top:3px solid var(--blue-500);text-align:center;">
+        <h3 style="margin-bottom:6px;">解决幻觉</h3>
+        <p>答案有据可查</p>
+      </div>
+      <div class="card" style="border-top:3px solid var(--purple-500);text-align:center;">
+        <h3 style="margin-bottom:6px;">解决过时</h3>
+        <p>实时检索最新数据</p>
+      </div>
+      <div class="card" style="border-top:3px solid var(--green-500);text-align:center;">
+        <h3 style="margin-bottom:6px;">解决专业</h3>
+        <p>接入企业私有知识</p>
+      </div>
+    </div>
+  </div>
+  <span class="page-num">17 / 23</span>
+</section>
+
+<!-- ==================== S18: 微调 ==================== -->
+<section class="slide" id="s18">
+  <div class="slide-inner stagger" style="max-width:950px;">
+    <span class="tag tag-purple" style="margin-bottom:10px;">核心概念</span>
+    <h2 style="margin-bottom:28px;">微调 = 把通才训练成<span class="text-blue">专才</span></h2>
+    <div style="display:flex;align-items:center;justify-content:center;gap:24px;margin-bottom:32px;flex-wrap:wrap;">
+      <div class="card" style="text-align:center;padding:28px 36px;">
+        <div style="font-size:2rem;margin-bottom:8px;">🎓</div>
+        <h3>通才</h3>
+        <p>什么都知道一点</p>
+      </div>
+      <div style="font-size:1.8rem;color:var(--text-400);">→</div>
+      <div style="text-align:center;padding:12px 24px;border-radius:var(--radius);background:var(--bg-blue);border:2px dashed var(--blue-500);">
+        <p style="color:var(--blue-600);font-weight:700;font-size:0.9rem;">你的数据</p>
+        <p style="color:var(--blue-500);font-size:0.78rem;">Fine-tuning</p>
+      </div>
+      <div style="font-size:1.8rem;color:var(--text-400);">→</div>
+      <div class="card" style="text-align:center;padding:28px 36px;border-top:3px solid var(--green-500);">
+        <div style="font-size:2rem;margin-bottom:8px;">💼</div>
+        <h3>专才</h3>
+        <p>你的领域它最懂</p>
+      </div>
+    </div>
+    <div class="card-grid card-grid-3">
+      <div class="card" style="text-align:center;padding:20px;">
+        <span style="font-size:2rem;font-weight:900;color:var(--green-500);">+40%</span>
+        <p style="margin-top:6px;">专业术语准确率</p>
+      </div>
+      <div class="card" style="text-align:center;padding:20px;">
+        <span style="font-size:2rem;font-weight:900;color:var(--red-500);">-60%</span>
+        <p style="margin-top:6px;">格式错误率</p>
+      </div>
+      <div class="card" style="text-align:center;padding:20px;">
+        <span style="font-size:2rem;font-weight:900;color:var(--blue-600);">3x</span>
+        <p style="margin-top:6px;">用户满意度</p>
+      </div>
+    </div>
+  </div>
+  <span class="page-num">18 / 23</span>
+</section>
+
+<!-- ==================== S19: MCP ==================== -->
+<section class="slide" id="s19">
+  <div class="slide-inner stagger">
+    <span class="tag tag-blue" style="margin-bottom:10px;">核心概念</span>
+    <h2 style="margin-bottom:28px;">MCP = AI的<span class="text-blue">USB-C</span>接口</h2>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:28px;align-items:center;">
+      <div>
+        <div class="card" style="text-align:center;padding:28px;margin-bottom:20px;border:2px solid var(--blue-500);background:var(--bg-blue);">
+          <h3 style="font-size:1.3rem;color:var(--blue-600);margin-bottom:14px;">MCP</h3>
+          <div style="display:flex;flex-wrap:wrap;gap:8px;justify-content:center;">
+            <span class="pill" style="background:white;">企业微信</span>
+            <span class="pill" style="background:white;">钉钉</span>
+            <span class="pill" style="background:white;">飞书</span>
+            <span class="pill" style="background:white;">WPS</span>
+            <span class="pill" style="background:white;">Database</span>
+            <span class="pill" style="background:white;">Files</span>
+          </div>
+        </div>
+        <div class="quote-bar">
+          <p style="color:var(--text-700);font-weight:600;font-size:0.95rem;">AI 与外部世界的交流口<br>统一接口，即插即用</p>
+        </div>
+      </div>
+      <div class="img-frame">
+        <img src="images/slide19_图片_46.png" alt="MCP架构图" style="width:100%;height:auto;display:block;max-height:400px;object-fit:contain;">
+      </div>
+    </div>
+  </div>
+  <span class="page-num">19 / 23</span>
+</section>
+
+<!-- ==================== S20: 7个概念总结 ==================== -->
+<section class="slide" id="s20">
+  <div class="slide-inner stagger">
+    <span class="tag tag-purple" style="margin-bottom:10px;">总结</span>
+    <h2 style="margin-bottom:28px;">7个概念，一张图串起来</h2>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:28px;align-items:center;">
+      <div>
+        <div style="display:flex;flex-direction:column;gap:10px;">
+          <div class="card" style="padding:14px 18px;border-left:4px solid var(--blue-500);">
+            <div style="display:flex;align-items:center;gap:10px;">
+              <span style="font-weight:800;color:var(--blue-600);font-size:0.95rem;">大模型</span>
+              <span style="color:var(--text-400);font-size:0.82rem;">LLM</span>
+            </div>
+          </div>
+          <div class="card" style="padding:14px 18px;border-left:4px solid var(--green-500);">
+            <div style="display:flex;align-items:center;gap:10px;">
+              <span style="font-weight:800;color:var(--green-500);font-size:0.95rem;">Token</span>
+              <span style="color:var(--text-400);font-size:0.82rem;">语言单位</span>
+            </div>
+          </div>
+          <div class="card" style="padding:14px 18px;border-left:4px solid var(--purple-500);">
+            <div style="display:flex;align-items:center;gap:10px;">
+              <span style="font-weight:800;color:var(--purple-500);font-size:0.95rem;">Prompt</span>
+              <span style="color:var(--text-400);font-size:0.82rem;">指令</span>
+            </div>
+          </div>
+          <div class="card" style="padding:14px 18px;border-left:4px solid var(--pink-500);">
+            <div style="display:flex;align-items:center;gap:10px;">
+              <span style="font-weight:800;color:var(--pink-500);font-size:0.95rem;">Agent</span>
+              <span style="color:var(--text-400);font-size:0.82rem;">手脚</span>
+            </div>
+          </div>
+          <div class="card" style="padding:14px 18px;border-left:4px solid var(--blue-600);">
+            <div style="display:flex;align-items:center;gap:10px;">
+              <span style="font-weight:800;color:var(--blue-600);font-size:0.95rem;">RAG</span>
+              <span style="color:var(--text-400);font-size:0.82rem;">图书馆</span>
+            </div>
+          </div>
+          <div class="card" style="padding:14px 18px;border-left:4px solid var(--orange-500);">
+            <div style="display:flex;align-items:center;gap:10px;">
+              <span style="font-weight:800;color:var(--orange-500);font-size:0.95rem;">微调</span>
+              <span style="color:var(--text-400);font-size:0.82rem;">培训班</span>
+            </div>
+          </div>
+          <div class="card" style="padding:14px 18px;border-left:4px solid var(--green-500);">
+            <div style="display:flex;align-items:center;gap:10px;">
+              <span style="font-weight:800;color:var(--green-500);font-size:0.95rem;">MCP</span>
+              <span style="color:var(--text-400);font-size:0.82rem;">接口</span>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="img-frame">
+        <img src="images/slide20_图片_46.png" alt="7个概念关系图" style="width:100%;height:auto;display:block;max-height:450px;object-fit:contain;">
+      </div>
+    </div>
+  </div>
+  <span class="page-num">20 / 23</span>
+</section>
+
+<!-- ==================== S21: 课后作业 ==================== -->
+<section class="slide" id="s21" style="background:var(--bg-page);">
+  <div class="deco" style="width:400px;height:400px;background:rgba(59,130,246,0.04);bottom:-80px;left:-80px;"></div>
+  <div class="slide-inner stagger" style="max-width:850px;">
+    <div class="quote-bar" style="margin-bottom:36px;">
+      <h1 style="font-size:clamp(1.4rem,2.8vw,2.2rem);line-height:1.55;color:var(--text-900);">
+        "概念讲清楚了——下节课看看谁更适合上场"
+      </h1>
+    </div>
+    <div class="card" style="padding:28px;">
+      <h3 style="margin-bottom:14px;font-size:0.8rem;color:var(--text-400);letter-spacing:0.08em;text-transform:uppercase;">课后作业</h3>
+      <p style="color:var(--text-900);font-weight:500;font-size:1.05rem;line-height:1.8;margin-bottom:14px;">
+        用自己的话，给朋友/同事解释今天学的7个概念中的任意3个。写成文字发到课程群。
+      </p>
+      <div style="padding:12px 18px;border-radius:10px;background:var(--bg-blue);">
+        <p style="color:var(--blue-600);font-weight:600;font-size:0.9rem;">要求：用类比，不用术语</p>
+      </div>
+    </div>
+  </div>
+  <span class="page-num">21 / 23</span>
+</section>
+
+<!-- ==================== S22: 下节预告 ==================== -->
+<!-- ==================== S22: AI概念小词典产出指导 ==================== -->
+<section class="slide" id="s22" style="background:linear-gradient(135deg, #F8FAFC 0%, #EFF6FF 50%, #FDF4FF 100%);">
+  <div class="slide-inner stagger">
+    <span class="tag tag-green" style="margin-bottom:10px;">小产出</span>
+    <h2 style="margin-bottom:20px;">AI概念小词典</h2>
+    <p style="color:var(--text-500);font-size:1rem;margin-bottom:28px;max-width:700px;">用豆包AI编程，快速生成一个属于你自己的AI概念互动词典</p>
+
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:24px;align-items:start;">
+      <!-- 左侧：操作步骤 -->
+      <div style="display:flex;flex-direction:column;gap:12px;">
+        <div class="card" style="padding:18px 20px;border-left:4px solid var(--blue-500);">
+          <div style="display:flex;align-items:flex-start;gap:12px;">
+            <span style="background:var(--blue-500);color:white;font-weight:700;font-size:0.8rem;width:24px;height:24px;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;">1</span>
+            <div>
+              <p style="font-weight:600;color:var(--text-900);font-size:0.95rem;margin-bottom:4px;">打开豆包AI编程</p>
+              <p style="color:var(--text-500);font-size:0.85rem;">打开 <strong>doubao.com</strong> → 点击左侧「编程」</p>
+            </div>
+          </div>
+        </div>
+        <div class="card" style="padding:18px 20px;border-left:4px solid var(--green-500);">
+          <div style="display:flex;align-items:flex-start;gap:12px;">
+            <span style="background:var(--green-500);color:white;font-weight:700;font-size:0.8rem;width:24px;height:24px;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;">2</span>
+            <div>
+              <p style="font-weight:600;color:var(--text-900);font-size:0.95rem;margin-bottom:4px;">粘贴提示词</p>
+              <p style="color:var(--text-500);font-size:0.85rem;margin-bottom:8px;">把下面的提示词直接发给豆包：</p>
+              <div style="background:#1a1a2e;border-radius:8px;padding:12px;font-family:monospace;font-size:0.8rem;color:#a8dadc;line-height:1.6;">
+                帮我做一个「AI概念小词典」网页：<br>
+                · 输入框输入关键词<br>
+                · 下方卡片展示：大模型、Token、<br>
+                &nbsp;&nbsp;Prompt、Agent、RAG、微调、MCP<br>
+                · 每个概念包含：中文名、英文名、<br>
+                &nbsp;&nbsp;一句话解释、一个生活类比<br>
+                · 搜索框实时过滤<br>
+                · 风格简约现代
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="card" style="padding:18px 20px;border-left:4px solid var(--purple-500);">
+          <div style="display:flex;align-items:flex-start;gap:12px;">
+            <span style="background:var(--purple-500);color:white;font-weight:700;font-size:0.8rem;width:24px;height:24px;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;">3</span>
+            <div>
+              <p style="font-weight:600;color:var(--text-900);font-size:0.95rem;margin-bottom:4px;">预览 & 保存</p>
+              <p style="color:var(--text-500);font-size:0.85rem;">AI生成后，预览效果，下载HTML文件</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 右侧：预览效果示意 -->
+      <div class="img-frame" style="background:white;border-radius:16px;padding:20px;box-shadow:var(--shadow-lg);">
+        <div style="text-align:center;margin-bottom:12px;">
+          <span style="background:var(--bg-blue);color:var(--blue-600);padding:4px 12px;border-radius:20px;font-size:0.75rem;font-weight:600;">效果预览</span>
+        </div>
+        <div style="background:var(--bg-gray);border-radius:10px;padding:14px;">
+          <input type="text" placeholder="🔍 搜索概念..." style="width:100%;padding:10px 14px;border:1px solid var(--border);border-radius:8px;font-size:0.85rem;margin-bottom:12px;outline:none;">
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
+            <div style="background:white;border-radius:8px;padding:10px;border:1px solid var(--border-light);">
+              <p style="font-weight:700;color:var(--blue-600);font-size:0.8rem;">大模型</p>
+              <p style="color:var(--text-400);font-size:0.7rem;">LLM</p>
+              <p style="color:var(--text-500);font-size:0.72rem;margin-top:4px;">像超级大脑，懂很多</p>
+            </div>
+            <div style="background:white;border-radius:8px;padding:10px;border:1px solid var(--border-light);">
+              <p style="font-weight:700;color:var(--green-500);font-size:0.8rem;">Token</p>
+              <p style="color:var(--text-400);font-size:0.7rem;">语言单位</p>
+              <p style="color:var(--text-500);font-size:0.72rem;margin-top:4px;">文字的积木</p>
+            </div>
+            <div style="background:white;border-radius:8px;padding:10px;border:1px solid var(--border-light);">
+              <p style="font-weight:700;color:var(--purple-500);font-size:0.8rem;">Agent</p>
+              <p style="color:var(--text-400);font-size:0.7rem;">智能体</p>
+              <p style="color:var(--text-500);font-size:0.72rem;margin-top:4px;">AI的手和脚</p>
+            </div>
+            <div style="background:white;border-radius:8px;padding:10px;border:1px solid var(--border-light);">
+              <p style="font-weight:700;color:var(--orange-500);font-size:0.8rem;">RAG</p>
+              <p style="color:var(--text-400);font-size:0.7rem;">检索增强</p>
+              <p style="color:var(--text-500);font-size:0.72rem;margin-top:4px;">AI的图书馆</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div style="margin-top:24px;padding:16px 20px;background:var(--bg-green);border-radius:12px;border:1px solid rgba(5,150,105,0.15);">
+      <p style="color:var(--green-500);font-weight:600;font-size:0.9rem;">
+        💡 提示：生成的词典可以发到课程群展示，也可以继续让AI加入更多概念
+      </p>
+    </div>
+  </div>
+  <span class="page-num">22 / 24</span>
+</section>
+
+<!-- ==================== S23: 下节预告 ==================== -->
+<section class="slide" id="s23" style="background:linear-gradient(135deg, #EFF6FF 0%, #FDF4FF 50%, #ECFDF5 100%);">
+  <div class="slide-inner stagger" style="max-width:850px;">
+    <div class="quote-bar" style="margin-bottom:36px;">
+      <h1 style="font-size:clamp(1.3rem,2.5vw,1.8rem);line-height:1.55;color:var(--text-900);">
+        "有人说，当模型做到足够强大的时候；<br>所有的AI Agent都会变得多余"
+      </h1>
+    </div>
+    <div style="text-align:center;">
+      <div style="margin-bottom:16px;">
+        <span style="font-size:0.78rem;color:var(--text-400);letter-spacing:0.1em;text-transform:uppercase;">下节预告</span>
+      </div>
+      <h3 style="margin-bottom:20px;color:var(--text-700);">2026大模型擂台赛</h3>
+      <div style="display:flex;flex-wrap:wrap;gap:10px;justify-content:center;">
+        <span class="pill" style="background:var(--bg-blue);color:var(--blue-600);border-color:rgba(59,130,246,0.2);">Kimi 2.5</span>
+        <span class="pill" style="background:var(--bg-purple);color:var(--purple-500);border-color:rgba(147,51,234,0.2);">MiniMax 2.7</span>
+        <span class="pill" style="background:var(--bg-green);color:var(--green-500);border-color:rgba(5,150,105,0.2);">Claude 4.7</span>
+        <span class="pill" style="background:var(--bg-pink);color:var(--pink-500);border-color:rgba(219,39,119,0.2);">GPT 5.4</span>
+        <span class="pill" style="background:var(--bg-blue);color:var(--blue-600);border-color:rgba(59,130,246,0.2);">豆包AI</span>
+        <span class="pill" style="background:var(--bg-green);color:var(--green-500);border-color:rgba(5,150,105,0.2);">DeepSeek</span>
+      </div>
+    </div>
+  </div>
+  <span class="page-num">23 / 24</span>
+</section>
+
+<!-- ==================== S24: THE END ==================== -->
+<section class="slide" id="s24" style="background:url('images/slide23_Image_0.png') center/cover no-repeat;position:relative;">
+  <div style="position:absolute;inset:0;background:rgba(0,0,0,0.4);"></div>
+  <div class="slide-inner stagger" style="text-align:center;position:relative;z-index:2;">
+    <h1 style="font-size:clamp(3rem,7vw,5rem);font-weight:900;letter-spacing:-0.03em;color:white;">
+      The End
+    </h1>
+    <p style="margin-top:16px;font-size:0.95rem;color:rgba(255,255,255,0.7);">C1 · Chapter 2 · AI核心概念一锅端</p>
+  </div>
+  <span class="page-num" style="color:rgba(255,255,255,0.6);">24 / 24</span>
+</section>
+
+<script>
+const nav = document.getElementById('slideNav');
+for (let i = 1; i <= 24; i++) {
+  const a = document.createElement('a');
+  a.href = '#s' + i;
+  a.dataset.slide = i;
+  nav.appendChild(a);
+}
+
+const observer = new IntersectionObserver(entries => {
+  entries.forEach(e => {
+    if (e.isIntersecting) {
+      const id = e.target.id;
+      document.querySelectorAll('.slide-nav a').forEach(a => a.classList.remove('active'));
+      const active = document.querySelector(`.slide-nav a[href="#${id}"]`);
+      if (active) active.classList.add('active');
+    }
+  });
+}, { threshold: 0.5 });
+
+document.querySelectorAll('.slide').forEach(s => observer.observe(s));
+
+document.addEventListener('keydown', e => {
+  const slides = document.querySelectorAll('.slide');
+  const current = [...slides].findIndex(s => {
+    const r = s.getBoundingClientRect();
+    return r.top >= -100 && r.top < window.innerHeight / 2;
+  });
+  if (e.key === 'ArrowDown' || e.key === ' ' || e.key === 'PageDown') {
+    e.preventDefault();
+    if (current < slides.length - 1) slides[current + 1].scrollIntoView({ behavior: 'smooth' });
+  }
+  if (e.key === 'ArrowUp' || e.key === 'PageUp') {
+    e.preventDefault();
+    if (current > 0) slides[current - 1].scrollIntoView({ behavior: 'smooth' });
+  }
+});
+</script>
+
+</body>
+</html>

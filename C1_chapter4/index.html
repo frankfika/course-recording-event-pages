@@ -1,0 +1,1012 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>C1-4 · 我们应该怎么学习AI呢？</title>
+<style>
+  @font-face {
+    font-family: 'Noto Sans SC';
+    src: url('NotoSansSC.ttf') format('truetype');
+    font-weight: 100 900;
+  }
+
+  :root {
+    --bg: #FFFFFF;
+    --bg-page: #F8FAFC;
+    --bg-blue: #EFF6FF;
+    --bg-purple: #FDF4FF;
+    --bg-green: #ECFDF5;
+    --bg-pink: #FCE7F3;
+    --bg-gray: #F9FAFB;
+    --bg-dark: #111827;
+    --blue-500: #3B82F6;
+    --blue-600: #2563EB;
+    --blue-700: #1D4ED8;
+    --purple-500: #9333EA;
+    --pink-500: #DB2777;
+    --green-500: #059669;
+    --red-500: #EF4444;
+    --orange-500: #F97316;
+    --text-900: #111827;
+    --text-700: #374151;
+    --text-500: #6B7280;
+    --text-400: #9CA3AF;
+    --border: #E5E7EB;
+    --border-light: #F3F4F6;
+    --shadow-sm: 0 1px 2px rgba(0,0,0,0.05);
+    --shadow: 0 1px 3px rgba(0,0,0,0.08), 0 1px 2px rgba(0,0,0,0.04);
+    --shadow-md: 0 4px 6px -1px rgba(0,0,0,0.07), 0 2px 4px -2px rgba(0,0,0,0.05);
+    --shadow-lg: 0 10px 15px -3px rgba(0,0,0,0.06), 0 4px 6px -4px rgba(0,0,0,0.04);
+    --radius: 16px;
+    --radius-sm: 12px;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  html {
+    font-family: 'Noto Sans SC', -apple-system, 'SF Pro Display', BlinkMacSystemFont, sans-serif;
+    background: var(--bg-page);
+    color: var(--text-900);
+    scroll-behavior: smooth;
+    scroll-snap-type: y mandatory;
+    overflow-x: hidden;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .slide {
+    width: 100vw;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    scroll-snap-align: start;
+    position: relative;
+    overflow: hidden;
+    background: var(--bg);
+    padding: 40px 0;
+  }
+
+  .slide-inner {
+    width: min(1200px, 90vw);
+    position: relative;
+    z-index: 2;
+  }
+
+  /* ===== TYPOGRAPHY ===== */
+  h1 { font-size: clamp(2rem, 4.2vw, 3.5rem); font-weight: 800; line-height: 1.2; letter-spacing: -0.02em; color: var(--text-900); }
+  h2 { font-size: clamp(1.5rem, 2.8vw, 2.2rem); font-weight: 700; line-height: 1.25; letter-spacing: -0.01em; color: var(--text-900); }
+  h3 { font-size: clamp(1rem, 1.6vw, 1.25rem); font-weight: 600; line-height: 1.35; color: var(--text-900); }
+  p, li { font-size: clamp(0.85rem, 1.2vw, 1.05rem); line-height: 1.7; color: var(--text-500); }
+
+  .text-blue { color: var(--blue-600); }
+  .text-purple { color: var(--purple-500); }
+  .text-pink { color: var(--pink-500); }
+  .text-green { color: var(--green-500); }
+  .text-red { color: var(--red-500); }
+  .text-orange { color: var(--orange-500); }
+
+  /* ===== SECTION TAG ===== */
+  .tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 5px 14px;
+    border-radius: 8px;
+    font-size: 0.78rem;
+    font-weight: 600;
+    letter-spacing: 0.02em;
+  }
+  .tag-blue { background: var(--bg-blue); color: var(--blue-600); }
+  .tag-purple { background: var(--bg-purple); color: var(--purple-500); }
+  .tag-green { background: var(--bg-green); color: var(--green-500); }
+  .tag-pink { background: var(--bg-pink); color: var(--pink-500); }
+  .tag-gray { background: var(--bg-gray); color: var(--text-500); }
+  .tag-dark { background: var(--bg-dark); color: white; }
+  .tag-red {
+    background: #FEE2E2;
+    color: var(--red-500);
+    animation: pulse-live 2s infinite;
+  }
+  .tag-red::before {
+    content: '';
+    width: 7px; height: 7px;
+    border-radius: 50%;
+    background: var(--red-500);
+    animation: blink 1.5s infinite;
+  }
+  @keyframes pulse-live {
+    0%, 100% { box-shadow: 0 0 0 0 rgba(239,68,68,0.2); }
+    50% { box-shadow: 0 0 0 6px rgba(239,68,68,0); }
+  }
+  @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0.3} }
+
+  /* ===== CARDS ===== */
+  .card {
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 24px;
+    box-shadow: var(--shadow-sm);
+    transition: all 0.25s ease;
+  }
+  .card:hover {
+    box-shadow: var(--shadow-md);
+    transform: translateY(-1px);
+  }
+
+  .card-grid { display: grid; gap: 16px; }
+  .card-grid-2 { grid-template-columns: repeat(2, 1fr); }
+  .card-grid-3 { grid-template-columns: repeat(3, 1fr); }
+
+  /* ===== NUMBER CIRCLE ===== */
+  .num {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px; height: 36px;
+    border-radius: 10px;
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: white;
+    flex-shrink: 0;
+  }
+
+  /* ===== IMAGE ===== */
+  .img-frame {
+    border-radius: var(--radius-sm);
+    overflow: hidden;
+    border: 1px solid var(--border);
+    background: var(--bg-gray);
+  }
+  .img-frame img {
+    width: 100%;
+    height: auto;
+    display: block;
+  }
+
+  /* ===== COMPARISON ===== */
+  .vs-container {
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    gap: 32px;
+    align-items: stretch;
+  }
+  .vs-divider {
+    width: 1px;
+    background: var(--border);
+    position: relative;
+  }
+  .vs-divider::after {
+    content: 'VS';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: var(--bg);
+    padding: 8px 6px;
+    font-size: 0.65rem;
+    font-weight: 800;
+    color: var(--text-400);
+    letter-spacing: 0.1em;
+  }
+
+  .compare-pair {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 24px;
+  }
+
+  /* ===== QUOTE BAR ===== */
+  .quote-bar {
+    position: relative;
+    padding-left: 28px;
+  }
+  .quote-bar::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 4px;
+    bottom: 4px;
+    width: 4px;
+    border-radius: 2px;
+    background: linear-gradient(to bottom, var(--blue-500), var(--purple-500));
+  }
+
+  /* ===== DECORATIVE SHAPES ===== */
+  .deco {
+    position: absolute;
+    border-radius: 50%;
+    opacity: 0.5;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  /* ===== PAGE COUNTER ===== */
+  .page-num {
+    position: absolute;
+    bottom: 24px;
+    right: 32px;
+    font-size: 0.72rem;
+    color: var(--text-400);
+    font-weight: 500;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .section-label {
+    position: absolute;
+    top: 28px;
+    right: 32px;
+    font-size: 0.72rem;
+    color: var(--text-400);
+    font-weight: 500;
+  }
+
+  /* ===== SLIDE NAV ===== */
+  .slide-nav {
+    position: fixed;
+    right: 16px;
+    top: 50%;
+    transform: translateY(-50%);
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    z-index: 100;
+  }
+  .slide-nav a {
+    width: 5px;
+    height: 5px;
+    border-radius: 50%;
+    background: var(--border);
+    transition: all 0.3s;
+    display: block;
+  }
+  .slide-nav a:hover,
+  .slide-nav a.active {
+    background: var(--blue-500);
+    transform: scale(1.6);
+  }
+
+  /* ===== ANIMATION ===== */
+  .stagger > * {
+    opacity: 0;
+    transform: translateY(16px);
+    animation: fadeUp 0.5s ease forwards;
+  }
+  .stagger > *:nth-child(1) { animation-delay: 0s; }
+  .stagger > *:nth-child(2) { animation-delay: 0.08s; }
+  .stagger > *:nth-child(3) { animation-delay: 0.14s; }
+  .stagger > *:nth-child(4) { animation-delay: 0.2s; }
+  .stagger > *:nth-child(5) { animation-delay: 0.25s; }
+  .stagger > *:nth-child(6) { animation-delay: 0.3s; }
+  @keyframes fadeUp {
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* ===== SCRIPT BLOCK ===== */
+  .script-block {
+    background: var(--bg-gray);
+    border: 1px solid var(--border-light);
+    border-radius: var(--radius-sm);
+    padding: 18px 22px;
+    font-size: 0.9rem;
+    color: var(--text-700);
+    line-height: 1.8;
+  }
+
+  /* ===== TIMELINE ===== */
+  .timeline {
+    display: flex;
+    align-items: flex-start;
+    gap: 0;
+    justify-content: center;
+    position: relative;
+  }
+  .timeline-step {
+    flex: 1;
+    text-align: center;
+    position: relative;
+    padding: 0 10px;
+  }
+  .timeline-step::after {
+    content: '';
+    position: absolute;
+    top: 26px;
+    right: 0;
+    width: calc(100% - 52px);
+    height: 2px;
+    background: linear-gradient(90deg, var(--blue-500), var(--purple-500));
+    transform: translateX(50%);
+    opacity: 0.3;
+  }
+  .timeline-step:last-child::after { display: none; }
+  .timeline-icon {
+    width: 52px; height: 52px;
+    border-radius: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.4rem;
+    margin: 0 auto 10px;
+    position: relative;
+    z-index: 2;
+  }
+
+  /* ===== PILL TAGS ===== */
+  .pill {
+    display: inline-block;
+    padding: 7px 16px;
+    border-radius: 10px;
+    font-size: 0.82rem;
+    font-weight: 600;
+    border: 1px solid var(--border);
+    background: var(--bg);
+    color: var(--text-700);
+    box-shadow: var(--shadow-sm);
+  }
+
+  /* ===== RESPONSIVE ===== */
+  @media (max-width: 768px) {
+    .card-grid-2, .card-grid-3 { grid-template-columns: 1fr; }
+    .vs-container { grid-template-columns: 1fr; }
+    .vs-divider { width: 100%; height: 1px; }
+    .compare-pair { grid-template-columns: 1fr; }
+    .timeline { flex-direction: column; gap: 14px; }
+    .timeline-step::after { display: none; }
+  }
+</style>
+</head>
+<body>
+
+<nav class="slide-nav" id="slideNav"></nav>
+
+<!-- ==================== S1: COVER ==================== -->
+<section class="slide" id="s1" style="background: var(--bg-blue);">
+  <div class="deco" style="width:400px;height:400px;background:rgba(59,130,246,0.08);top:-100px;right:-80px;"></div>
+  <div class="deco" style="width:300px;height:300px;background:rgba(147,51,234,0.06);bottom:-60px;left:-60px;"></div>
+  <div class="slide-inner stagger" style="text-align:center;">
+    <div style="margin-bottom:28px;">
+      <img src="images/slide1_图片_13.png" alt="Logo" style="height:44px;">
+    </div>
+    <div style="display:inline-flex;align-items:center;gap:12px;background:white;padding:10px 28px;border-radius:100px;box-shadow:var(--shadow);margin-bottom:28px;">
+      <span style="background:var(--blue-500);color:white;padding:4px 14px;border-radius:8px;font-size:1.2rem;font-weight:800;">C1</span>
+      <span style="font-size:0.9rem;font-weight:600;color:var(--text-700);">必修 · 5节</span>
+    </div>
+    <h1 style="font-size:clamp(2.5rem,5.5vw,4rem);margin-bottom:16px;color:var(--text-900);">
+      AI工具与核心概念
+    </h1>
+    <p style="font-size:clamp(1rem,1.6vw,1.3rem);color:var(--text-500);margin-bottom:40px;">
+      从零建立对AI的完整认知
+    </p>
+    <p style="font-size:0.95rem;color:var(--text-700);font-weight:500;">
+      讲师：陈放
+    </p>
+  </div>
+  <span class="page-num">01 / 23</span>
+</section>
+
+<!-- ==================== S2: CHAPTER TITLE ==================== -->
+<section class="slide" id="s2" style="background:linear-gradient(135deg, #EFF6FF 0%, #FDF4FF 50%, #ECFDF5 100%);">
+  <div class="deco" style="width:500px;height:500px;background:rgba(59,130,246,0.06);top:-200px;right:-100px;"></div>
+  <div class="deco" style="width:350px;height:350px;background:rgba(147,51,234,0.05);bottom:-100px;left:-80px;"></div>
+  <div class="slide-inner stagger" style="text-align:center;">
+    <div style="margin-bottom:24px;">
+      <span class="tag tag-dark" style="font-size:0.9rem;padding:8px 24px;letter-spacing:0.1em;">CHAPTER 4</span>
+    </div>
+    <h1 style="font-size:clamp(2.2rem,5vw,3.5rem);margin-bottom:20px;">
+      我们应该怎么学习AI呢？
+    </h1>
+    <p style="font-size:clamp(1rem,1.5vw,1.2rem);color:var(--text-500);">从OpenClaw说起</p>
+    <div class="img-frame" style="max-width:700px;margin:32px auto 0;">
+      <img src="images/slide2_Image_0.png" alt="OpenClaw" style="width:100%;height:auto;display:block;max-height:380px;object-fit:contain;">
+    </div>
+  </div>
+  <span class="page-num">Chapter 4 / 23</span>
+</section>
+
+<!-- ==================== S3: QUESTION ==================== -->
+<section class="slide" id="s3">
+  <div class="deco" style="width:500px;height:500px;background:rgba(59,130,246,0.05);top:-150px;left:-100px;"></div>
+  <div class="slide-inner stagger" style="text-align:center;max-width:850px;">
+    <span class="section-label" style="position:static;display:block;margin-bottom:16px;font-size:0.78rem;color:var(--text-400);">OpenCSG / C1-4</span>
+    <div style="margin-bottom:24px;">
+      <span style="font-size:3.5rem;color:var(--blue-500);opacity:0.15;font-weight:900;">?</span>
+    </div>
+    <h2 style="margin-bottom:12px;">先问你一个问题</h2>
+    <h1 style="font-size:clamp(1.5rem,3vw,2.2rem);line-height:1.6;color:var(--text-700);">
+      如果让你做一个AI助手，<br>能自动处理微信消息、查数据库、还能调用飞书机器人——
+    </h1>
+    <h1 style="font-size:clamp(1.8rem,3.5vw,2.6rem);margin-top:20px;">
+      <span class="text-blue">你该从哪开始？</span>
+    </h1>
+  </div>
+  <span class="page-num">03 / 23</span>
+</section>
+
+<!-- ==================== S4: OPENCLAW INTRO ==================== -->
+<section class="slide" id="s4">
+  <div class="slide-inner stagger">
+    <span class="tag tag-blue" style="margin-bottom:10px;">🦞 OpenClaw</span>
+    <h2 style="margin-bottom:12px;">OpenClaw是什么？</h2>
+    <a href="https://openclaw.ai/" target="_blank" style="display:inline-block;margin-bottom:28px;padding:8px 20px;background:var(--blue-500);color:#fff;border-radius:8px;text-decoration:none;font-size:14px;font-weight:500;">访问 OpenClaw 官网 →</a>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:24px;align-items:start;">
+      <div style="display:flex;flex-direction:column;gap:16px;">
+        <div class="card" style="border-top:3px solid var(--blue-500);">
+          <div style="display:flex;align-items:center;gap:14px;margin-bottom:10px;">
+            <span class="num" style="background:var(--blue-500);">01</span>
+            <h3>AI Agent运行框架</h3>
+          </div>
+          <p>OpenClaw是一个AI Agent运行框架</p>
+        </div>
+        <div class="card" style="border-top:3px solid var(--purple-500);">
+          <div style="display:flex;align-items:center;gap:14px;margin-bottom:10px;">
+            <span class="num" style="background:var(--purple-500);">02</span>
+            <h3>真正"动手"操作</h3>
+          </div>
+          <p>它能让AI真正"动手"操作你的工具</p>
+        </div>
+        <div class="card" style="border-top:3px solid var(--green-500);">
+          <div style="display:flex;align-items:center;gap:14px;margin-bottom:10px;">
+            <span class="num" style="background:var(--green-500);">03</span>
+            <h3>核心理念</h3>
+          </div>
+          <p>把复杂系统简化成AI能理解和调用的"技能"</p>
+        </div>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:16px;">
+        <div class="img-frame">
+          <img src="images/slide4_图片_14.png" alt="OpenClaw Logo" style="width:100%;height:auto;display:block;max-height:180px;object-fit:contain;">
+        </div>
+        <div class="img-frame">
+          <img src="images/slide4_图片_15.png" alt="OpenClaw Screenshot" style="width:100%;height:auto;display:block;max-height:280px;object-fit:contain;">
+        </div>
+      </div>
+    </div>
+  </div>
+  <span class="page-num">04 / 23</span>
+</section>
+
+<!-- ==================== S5: FOUR LAYER ARCH ==================== -->
+<section class="slide" id="s5" style="background:var(--bg-page);">
+  <div class="slide-inner stagger">
+    <span class="tag tag-purple" style="margin-bottom:10px;">核心架构</span>
+    <h2 style="margin-bottom:28px;">OpenClaw的核心理念：<span class="text-blue">四层架构</span></h2>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:28px;align-items:center;">
+      <div class="card-grid" style="gap:12px;">
+        <div class="card" style="border-left:4px solid var(--blue-500);padding:16px 20px;">
+          <h3 style="margin-bottom:4px;">技能层 Skills</h3>
+          <p>AI能执行的具体任务</p>
+        </div>
+        <div class="card" style="border-left:4px solid var(--purple-500);padding:16px 20px;">
+          <h3 style="margin-bottom:4px;">Pi Agent层</h3>
+          <p>协调与决策中心</p>
+        </div>
+        <div class="card" style="border-left:4px solid var(--green-500);padding:16px 20px;">
+          <h3 style="margin-bottom:4px;">网关层 Gateway</h3>
+          <p>连接外部世界</p>
+        </div>
+        <div class="card" style="border-left:4px solid var(--orange-500);padding:16px 20px;">
+          <h3 style="margin-bottom:4px;">模型层 LLM</h3>
+          <p>AI的大脑</p>
+        </div>
+      </div>
+      <div class="img-frame">
+        <img src="images/slide5_图片_17.png" alt="四层架构图" style="width:100%;height:auto;display:block;max-height:400px;object-fit:contain;">
+      </div>
+    </div>
+    <div class="quote-bar" style="margin-top:24px;">
+      <p style="font-weight:600;color:var(--text-700);">理解这个分层，你就理解了学习AI的正确顺序</p>
+    </div>
+  </div>
+  <span class="page-num">05 / 23</span>
+</section>
+
+<!-- ==================== S6: LAYER 1 - MODEL ==================== -->
+<section class="slide" id="s6">
+  <div class="slide-inner stagger">
+    <span class="tag tag-blue" style="margin-bottom:10px;">🧠 学习阶段一</span>
+    <h2 style="margin-bottom:8px;">第一层：模型层——先学会"说话"</h2>
+    <p style="margin-bottom:24px;color:var(--text-500);font-weight:500;">对应学习阶段一：<span class="text-blue" style="font-weight:700;">学会用</span></p>
+    <div class="card" style="padding:28px;margin-bottom:20px;">
+      <p style="font-size:1.05rem;color:var(--text-700);margin-bottom:20px;">模型是AI的"大脑"，负责理解意图和生成内容</p>
+      <p style="font-size:0.85rem;color:var(--text-500);margin-bottom:16px;">主流大模型：</p>
+      <div style="display:flex;flex-wrap:wrap;gap:10px;">
+        <span class="pill" style="border-color:var(--blue-500);color:var(--blue-600);">GPT</span>
+        <span class="pill" style="border-color:var(--purple-500);color:var(--purple-500);">Claude</span>
+        <span class="pill" style="border-color:var(--green-500);color:var(--green-500);">Kimi</span>
+        <span class="pill" style="border-color:var(--orange-500);color:var(--orange-500);">Minimax</span>
+      </div>
+    </div>
+    <div class="quote-bar">
+      <p style="font-weight:600;color:var(--text-700);">学习AI，首先要会用这些大模型</p>
+    </div>
+  </div>
+  <span class="page-num">06 / 23</span>
+</section>
+
+<!-- ==================== S7: LAYER 2 - GATEWAY ==================== -->
+<section class="slide" id="s7" style="background:var(--bg-page);">
+  <div class="slide-inner stagger">
+    <span class="tag tag-green" style="margin-bottom:10px;">🔌 学习阶段二</span>
+    <h2 style="margin-bottom:8px;">第二层：网关层——学会连接外部世界</h2>
+    <p style="margin-bottom:24px;color:var(--text-500);font-weight:500;">对应学习阶段二：<span class="text-green" style="font-weight:700;">学会连</span></p>
+    <div class="card" style="padding:28px;margin-bottom:20px;">
+      <p style="font-size:1.05rem;color:var(--text-700);margin-bottom:20px;">网关让AI能调用外部工具和服务</p>
+      <div style="display:flex;flex-wrap:wrap;gap:10px;">
+        <span class="pill">企业微信</span>
+        <span class="pill">飞书</span>
+        <span class="pill">钉钉</span>
+        <span class="pill">数据库</span>
+        <span class="pill">API接口</span>
+      </div>
+    </div>
+    <div class="quote-bar">
+      <p style="font-weight:600;color:var(--text-700);">类比：MCP就是AI的"USB-C接口"，统一标准，即插即用</p>
+    </div>
+  </div>
+  <span class="page-num">07 / 23</span>
+</section>
+
+<!-- ==================== S8: LAYER 3 - PI AGENT ==================== -->
+<section class="slide" id="s8">
+  <div class="slide-inner stagger">
+    <span class="tag tag-purple" style="margin-bottom:10px;">🤖 学习阶段三</span>
+    <h2 style="margin-bottom:8px;">第三层：Pi Agent——学会编排工作流</h2>
+    <p style="margin-bottom:24px;color:var(--text-500);font-weight:500;">对应学习阶段三：<span class="text-purple" style="font-weight:700;">学会搭</span></p>
+    <div class="card" style="padding:28px;margin-bottom:20px;">
+      <p style="font-size:1.05rem;color:var(--text-700);margin-bottom:16px;">Pi Agent是协调者，负责理解意图、拆解任务、调度技能</p>
+      <div class="script-block" style="margin-bottom:16px;">
+        <p style="color:var(--text-500);font-size:0.85rem;margin-bottom:8px;">示例："帮我整理会议纪要并发邮件"</p>
+        <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;font-size:1rem;">
+          <span style="background:var(--bg-blue);padding:6px 14px;border-radius:8px;">🎙️ 听录音</span>
+          <span style="color:var(--text-400);">→</span>
+          <span style="background:var(--bg-green);padding:6px 14px;border-radius:8px;">📝 提取要点</span>
+          <span style="color:var(--text-400);">→</span>
+          <span style="background:var(--bg-purple);padding:6px 14px;border-radius:8px;">✉️ 生成邮件</span>
+          <span style="color:var(--text-400);">→</span>
+          <span style="background:var(--bg-pink);padding:6px 14px;border-radius:8px;">📤 发送</span>
+        </div>
+      </div>
+    </div>
+  </div>
+  <span class="page-num">08 / 23</span>
+</section>
+
+<!-- ==================== S9: LAYER 4 - SKILLS ==================== -->
+<section class="slide" id="s9" style="background:var(--bg-page);">
+  <div class="slide-inner stagger">
+    <span class="tag tag-pink" style="margin-bottom:10px;">🧩 学习阶段四</span>
+    <h2 style="margin-bottom:8px;">第四层：技能层——学会封装能力</h2>
+    <p style="margin-bottom:24px;color:var(--text-500);font-weight:500;">对应学习阶段四：<span class="text-pink" style="font-weight:700;">学会建</span></p>
+    <div class="card" style="padding:28px;margin-bottom:20px;">
+      <p style="font-size:1.05rem;color:var(--text-700);margin-bottom:16px;">技能是可复用的能力模块<br>就像乐高积木，拼起来就是完整应用</p>
+      <div style="display:flex;gap:16px;flex-wrap:wrap;margin-top:16px;">
+        <div style="background:var(--bg-blue);padding:14px 20px;border-radius:12px;text-align:center;">
+          <span style="font-size:1.5rem;">📦</span>
+          <p style="font-size:0.85rem;font-weight:600;color:var(--text-700);margin-top:4px;">查订单</p>
+        </div>
+        <div style="background:var(--bg-green);padding:14px 20px;border-radius:12px;text-align:center;">
+          <span style="font-size:1.5rem;">📧</span>
+          <p style="font-size:0.85rem;font-weight:600;color:var(--text-700);margin-top:4px;">发邮件</p>
+        </div>
+        <div style="background:var(--bg-purple);padding:14px 20px;border-radius:12px;text-align:center;">
+          <span style="font-size:1.5rem;">🎨</span>
+          <p style="font-size:0.85rem;font-weight:600;color:var(--text-700);margin-top:4px;">生成海报</p>
+        </div>
+      </div>
+    </div>
+    <div class="quote-bar">
+      <p style="font-weight:600;color:var(--text-700);">封装能力才能产生复利：一次开发，多次收益</p>
+    </div>
+  </div>
+  <span class="page-num">09 / 23</span>
+</section>
+
+<!-- ==================== S10: WAIC ==================== -->
+<section class="slide" id="s10">
+  <div class="slide-inner stagger">
+    <span class="tag tag-blue" style="margin-bottom:10px;">实战案例</span>
+    <h2 style="margin-bottom:28px;">世界人工智能大会（WAIC）的官方黑客松</h2>
+    <div class="card-grid card-grid-3">
+      <div class="img-frame">
+        <img src="images/slide10_图片_16.png" alt="WAIC 1" style="width:100%;height:auto;display:block;max-height:340px;object-fit:contain;">
+      </div>
+      <div class="img-frame">
+        <img src="images/slide10_图片_17.png" alt="WAIC 2" style="width:100%;height:auto;display:block;max-height:340px;object-fit:contain;">
+      </div>
+      <div class="img-frame">
+        <img src="images/slide10_图片_18.png" alt="WAIC 3" style="width:100%;height:auto;display:block;max-height:340px;object-fit:contain;">
+      </div>
+    </div>
+  </div>
+  <span class="page-num">10 / 23</span>
+</section>
+
+<!-- ==================== S11: THREE INSIGHTS ==================== -->
+<section class="slide" id="s11" style="background:var(--bg-page);">
+  <div class="slide-inner stagger">
+    <span class="tag tag-green" style="margin-bottom:10px;">关键认知</span>
+    <h2 style="margin-bottom:28px;">从OpenClaw和WAIC学到的<span class="text-blue">三个关键认知</span></h2>
+    <div class="card-grid card-grid-3">
+      <div class="card" style="border-top:3px solid var(--blue-500);">
+        <div style="display:flex;align-items:center;gap:14px;margin-bottom:14px;">
+          <span class="num" style="background:var(--blue-500);">1</span>
+          <span style="font-size:1.5rem;">▶️</span>
+        </div>
+        <h3 style="margin-bottom:8px;">先从用起来开始</h3>
+        <p>别纠结原理<br>先用，在实战中理解</p>
+      </div>
+      <div class="card" style="border-top:3px solid var(--green-500);">
+        <div style="display:flex;align-items:center;gap:14px;margin-bottom:14px;">
+          <span class="num" style="background:var(--green-500);">2</span>
+          <span style="font-size:1.5rem;">🔌</span>
+        </div>
+        <h3 style="margin-bottom:8px;">连接比模型更重要</h3>
+        <p>能把AI接入业务场景<br>比选什么模型更关键</p>
+      </div>
+      <div class="card" style="border-top:3px solid var(--purple-500);">
+        <div style="display:flex;align-items:center;gap:14px;margin-bottom:14px;">
+          <span class="num" style="background:var(--purple-500);">3</span>
+          <span style="font-size:1.5rem;">📦</span>
+        </div>
+        <h3 style="margin-bottom:8px;">封装能力才能复利</h3>
+        <p>把经验变成可复用技能<br>一次开发，多次收益</p>
+      </div>
+    </div>
+  </div>
+  <span class="page-num">11 / 23</span>
+</section>
+
+<!-- ==================== S12: TRANSITION QUESTION ==================== -->
+<section class="slide" id="s12">
+  <div class="deco" style="width:500px;height:500px;background:rgba(59,130,246,0.05);top:-150px;left:-100px;"></div>
+  <div class="slide-inner stagger" style="text-align:center;max-width:850px;">
+    <div style="margin-bottom:24px;">
+      <span style="font-size:3.5rem;color:var(--orange-500);opacity:0.15;font-weight:900;">?</span>
+    </div>
+    <h2 style="margin-bottom:16px;color:var(--text-500);">好，问题来了——</h2>
+    <h1 style="font-size:clamp(2rem,4.5vw,3.2rem);">
+      <span class="text-blue">你应该怎么学？</span>
+    </h1>
+  </div>
+  <span class="page-num">12 / 23</span>
+</section>
+
+<!-- ==================== S13: TIP 01 ==================== -->
+<section class="slide" id="s13" style="background:var(--bg-page);">
+  <div class="slide-inner stagger">
+    <div style="display:flex;align-items:center;gap:16px;margin-bottom:20px;">
+      <span class="num" style="background:var(--blue-500);width:48px;height:48px;font-size:1.1rem;">01</span>
+      <h2>永远不要冲第一波</h2>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:14px;">
+      <div class="card" style="padding:18px 22px;">
+        <p style="color:var(--text-700);">每天都有新产品、新技术冒出来，都说自己是"现象级"、"颠覆性"</p>
+      </div>
+      <div class="card" style="padding:18px 22px;">
+        <p style="color:var(--text-700);">新产品刚出时问题多、说法纷纭，测试后往往发现也就那么回事</p>
+      </div>
+      <div class="card" style="padding:18px 22px;">
+        <p style="color:var(--text-700);">等1-2周，甚至1个月后还在讨论的产品，才值得学</p>
+      </div>
+    </div>
+    <div class="quote-bar" style="margin-top:20px;">
+      <p style="font-weight:600;color:var(--text-700);">时间是最好的过滤器，能活过一个月还保持热度的产品才是真需求</p>
+    </div>
+  </div>
+  <span class="page-num">13 / 23</span>
+</section>
+
+<!-- ==================== S14: TIP 02 ==================== -->
+<section class="slide" id="s14">
+  <div class="slide-inner stagger">
+    <div style="display:flex;align-items:center;gap:16px;margin-bottom:20px;">
+      <span class="num" style="background:var(--purple-500);width:48px;height:48px;font-size:1.1rem;">02</span>
+      <h2>对AI产品，像渣男一样没有忠诚度</h2>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:14px;">
+      <div class="card" style="padding:18px 22px;">
+        <p style="color:var(--text-700);">AI变化太快，过几周就会有新的替代品出现</p>
+      </div>
+      <div class="card" style="padding:18px 22px;border-left:3px solid var(--red-500);">
+        <p style="color:var(--text-700);">踩过的坑：买了Cursor → 限制Claude 3.5 → 又买Claude Code → 又买全家桶</p>
+      </div>
+      <div class="card" style="padding:18px 22px;border-left:3px solid var(--orange-500);">
+        <p style="color:var(--text-700);font-weight:600;">沉没成本心态，是学AI路上最大的敌人</p>
+      </div>
+    </div>
+    <div class="quote-bar" style="margin-top:20px;">
+      <p style="font-weight:600;color:var(--text-700);">哪个好用用哪个，随时准备切换，不要死磕已付费的工具</p>
+    </div>
+  </div>
+  <span class="page-num">14 / 23</span>
+</section>
+
+<!-- ==================== S15: TIP 03 ==================== -->
+<section class="slide" id="s15" style="background:var(--bg-page);">
+  <div class="slide-inner stagger">
+    <div style="display:flex;align-items:center;gap:16px;margin-bottom:20px;">
+      <span class="num" style="background:var(--green-500);width:48px;height:48px;font-size:1.1rem;">03</span>
+      <h2>多看普通博主，少问资深程序员</h2>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:14px;">
+      <div class="card" style="padding:18px 22px;">
+        <p style="color:var(--text-700);">最不欢迎AI的往往是程序员："手写代码比AI写的好"</p>
+      </div>
+      <div class="card" style="padding:18px 22px;">
+        <p style="color:var(--text-700);">普通人因不了解技术细节，对新技术有更好的接受度</p>
+      </div>
+      <div class="card" style="padding:18px 22px;">
+        <p style="color:var(--text-700);">部分视频号博主（清华美院李一舟等）说起AI应用比大部分程序员清楚</p>
+      </div>
+    </div>
+    <div class="quote-bar" style="margin-top:20px;">
+      <p style="font-weight:600;color:var(--text-700);">关键看态度：拥抱变化的人，才能教你怎么用好AI</p>
+    </div>
+  </div>
+  <span class="page-num">15 / 23</span>
+</section>
+
+<!-- ==================== S16: TIP 04 ==================== -->
+<section class="slide" id="s16">
+  <div class="slide-inner stagger">
+    <div style="display:flex;align-items:center;gap:16px;margin-bottom:20px;">
+      <span class="num" style="background:var(--orange-500);width:48px;height:48px;font-size:1.1rem;">04</span>
+      <h2>说再多，不如动起来</h2>
+    </div>
+    <div class="card-grid card-grid-3" style="margin-bottom:20px;">
+      <div class="card" style="border-top:3px solid var(--blue-500);">
+        <h3 style="margin-bottom:12px;color:var(--blue-600);">学习资源推荐</h3>
+        <p><strong>博主：</strong>通向AGI之路、秋芝2046、李一舟</p>
+        <p><strong>进阶：</strong>Andrew Ng 的AI课程</p>
+        <p><strong>工具：</strong>腾讯IMA、豆包、Cursor、NotebookLM、Claude Code、Manus</p>
+        <p><strong>理论：</strong>李飞飞《Agent AI》论文</p>
+      </div>
+      <div class="card" style="border-top:3px solid var(--red-500);">
+        <h3 style="margin-bottom:12px;color:var(--red-500);">避坑两忌</h3>
+        <p><strong style="color:var(--red-500);">完美主义</strong> - 等完全搞懂了再用，永远等不到那天</p>
+        <p style="margin-top:8px;"><strong style="color:var(--red-500);">沉没成本</strong> - 花钱买了工具就死磕，浪费时间</p>
+      </div>
+      <div class="card" style="border-top:3px solid var(--green-500);">
+        <h3 style="margin-bottom:12px;color:var(--green-500);">正确姿势</h3>
+        <div style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:12px;">
+          <span class="pill" style="border-color:var(--green-500);color:var(--green-500);">快速试错</span>
+          <span class="pill" style="border-color:var(--green-500);color:var(--green-500);">随时切换</span>
+          <span class="pill" style="border-color:var(--green-500);color:var(--green-500);">跟着大流走</span>
+        </div>
+        <p style="font-weight:600;color:var(--text-700);">AI不是看会的，是用会的</p>
+      </div>
+    </div>
+  </div>
+  <span class="page-num">16 / 23</span>
+</section>
+
+<!-- ==================== S17: REFLECTION QUESTION ==================== -->
+<section class="slide" id="s17" style="background:linear-gradient(135deg, #EFF6FF 0%, #FDF4FF 100%);">
+  <div class="deco" style="width:400px;height:400px;background:rgba(59,130,246,0.06);top:-100px;right:-80px;"></div>
+  <div class="slide-inner stagger" style="text-align:center;max-width:850px;">
+    <div style="margin-bottom:24px;">
+      <span style="font-size:3.5rem;color:var(--purple-500);opacity:0.15;font-weight:900;">?</span>
+    </div>
+    <h1 style="font-size:clamp(2rem,4.5vw,3.2rem);margin-bottom:20px;">
+      你真的学好AI了吗
+    </h1>
+    <p style="font-size:clamp(1rem,1.5vw,1.2rem);color:var(--text-500);">你觉得你在哪个阶段？</p>
+    <div style="margin-top:16px;color:var(--text-400);letter-spacing:0.3em;font-size:0.9rem;">————————————</div>
+  </div>
+  <span class="page-num">17 / 23</span>
+</section>
+
+<!-- ==================== S18: 5 LEVELS ==================== -->
+<section class="slide" id="s18">
+  <div class="slide-inner stagger">
+    <span class="tag tag-blue" style="margin-bottom:10px;">能力阶梯</span>
+    <h2 style="margin-bottom:28px;">AI学习的5个阶段<span style="font-size:0.85rem;color:var(--text-400);margin-left:8px;">（对应四层架构）</span></h2>
+    <div style="display:flex;flex-direction:column;gap:12px;">
+      <div class="card" style="display:flex;align-items:center;gap:16px;padding:16px 20px;">
+        <span class="num" style="background:var(--text-400);border-radius:10px;padding:6px 14px;width:auto;height:auto;font-size:0.78rem;">Lv.1</span>
+        <h3 style="flex:1;">使用者</h3>
+        <p style="color:var(--text-500);">会用模型（模型层）</p>
+      </div>
+      <div class="card" style="display:flex;align-items:center;gap:16px;padding:16px 20px;">
+        <span class="num" style="background:var(--blue-500);border-radius:10px;padding:6px 14px;width:auto;height:auto;font-size:0.78rem;">Lv.2</span>
+        <h3 style="flex:1;">连接者</h3>
+        <p style="color:var(--text-500);">会接工具（网关层）</p>
+      </div>
+      <div class="card" style="display:flex;align-items:center;gap:16px;padding:16px 20px;">
+        <span class="num" style="background:var(--purple-500);border-radius:10px;padding:6px 14px;width:auto;height:auto;font-size:0.78rem;">Lv.3</span>
+        <h3 style="flex:1;">构建者</h3>
+        <p style="color:var(--text-500);">会搭工作流（Pi Agent层）</p>
+      </div>
+      <div class="card" style="display:flex;align-items:center;gap:16px;padding:16px 20px;">
+        <span class="num" style="background:var(--green-500);border-radius:10px;padding:6px 14px;width:auto;height:auto;font-size:0.78rem;">Lv.4</span>
+        <h3 style="flex:1;">开发者</h3>
+        <p style="color:var(--text-500);">会封装技能（技能层）</p>
+      </div>
+      <div class="card" style="display:flex;align-items:center;gap:16px;padding:16px 20px;border-color:var(--orange-500);background:linear-gradient(135deg,#FFFBEB,#FFF);">
+        <span class="num" style="background:var(--orange-500);border-radius:10px;padding:6px 14px;width:auto;height:auto;font-size:0.78rem;">Lv.5</span>
+        <h3 style="flex:1;">架构师</h3>
+        <p style="color:var(--text-500);">会设计系统（四层融会贯通）</p>
+      </div>
+    </div>
+  </div>
+  <span class="page-num">18 / 23</span>
+</section>
+
+<!-- ==================== S19: 30-DAY PLAN ==================== -->
+<section class="slide" id="s19" style="background:var(--bg-page);">
+  <div class="slide-inner stagger">
+    <span class="tag tag-green" style="margin-bottom:10px;">行动计划</span>
+    <h2 style="margin-bottom:28px;">具体怎么开始？<span class="text-blue">30天行动计划</span></h2>
+    <div class="timeline">
+      <div class="timeline-step">
+        <div class="timeline-icon" style="background:var(--bg-blue);">🚩</div>
+        <h3 style="margin-bottom:4px;">Week 1</h3>
+        <p style="font-weight:600;color:var(--text-700);margin-bottom:4px;">学会Prompt基础</p>
+        <p>掌握核心概念</p>
+        <div style="margin-top:8px;">
+          <span class="pill" style="font-size:0.75rem;padding:4px 10px;">C1 + C2</span>
+        </div>
+      </div>
+      <div class="timeline-step">
+        <div class="timeline-icon" style="background:var(--bg-green);">🚩</div>
+        <h3 style="margin-bottom:4px;">Week 2</h3>
+        <p style="font-weight:600;color:var(--text-700);margin-bottom:4px;">学会接业务</p>
+        <p>实战应用</p>
+        <div style="margin-top:8px;">
+          <span class="pill" style="font-size:0.75rem;padding:4px 10px;">C3 + C4</span>
+        </div>
+      </div>
+      <div class="timeline-step">
+        <div class="timeline-icon" style="background:var(--bg-purple);">🚩</div>
+        <h3 style="margin-bottom:4px;">Week 3</h3>
+        <p style="font-weight:600;color:var(--text-700);margin-bottom:4px;">选修深化</p>
+        <p>按角色选课</p>
+        <div style="margin-top:8px;">
+          <span class="pill" style="font-size:0.75rem;padding:4px 10px;">C5/C6/C7 选1-2</span>
+        </div>
+      </div>
+      <div class="timeline-step">
+        <div class="timeline-icon" style="background:var(--bg-pink);">🏆</div>
+        <h3 style="margin-bottom:4px;">Week 4</h3>
+        <p style="font-weight:600;color:var(--text-700);margin-bottom:4px;">完成</p>
+        <p>毕业项目</p>
+        <div style="margin-top:8px;">
+          <span class="pill" style="font-size:0.75rem;padding:4px 10px;">综合实战</span>
+        </div>
+      </div>
+    </div>
+  </div>
+  <span class="page-num">19 / 23</span>
+</section>
+
+<!-- ==================== S20: QUOTE ==================== -->
+<section class="slide" id="s20" style="background:linear-gradient(135deg, #EFF6FF 0%, #FDF4FF 50%, #ECFDF5 100%);">
+  <div class="deco" style="width:500px;height:500px;background:rgba(59,130,246,0.06);top:-200px;right:-100px;"></div>
+  <div class="slide-inner stagger" style="text-align:center;max-width:850px;">
+    <h1 style="font-size:clamp(2rem,4.5vw,3.2rem);line-height:1.6;margin-bottom:32px;">
+      "先学会<span class="text-blue">用</span>，<br>
+      再学会<span class="text-purple">建</span>，<br>
+      最后学会<span class="text-green">架构</span>"
+    </h1>
+    <div style="display:flex;justify-content:center;gap:20px;">
+      <span class="pill" style="border-color:var(--blue-500);color:var(--blue-600);font-size:1rem;padding:10px 24px;">用</span>
+      <span style="color:var(--text-400);font-size:1.5rem;display:flex;align-items:center;">→</span>
+      <span class="pill" style="border-color:var(--purple-500);color:var(--purple-500);font-size:1rem;padding:10px 24px;">建</span>
+      <span style="color:var(--text-400);font-size:1.5rem;display:flex;align-items:center;">→</span>
+      <span class="pill" style="border-color:var(--green-500);color:var(--green-500);font-size:1rem;padding:10px 24px;">架构</span>
+    </div>
+  </div>
+  <span class="page-num">20 / 23</span>
+</section>
+
+<!-- ==================== S21: HOMEWORK ==================== -->
+<section class="slide" id="s21">
+  <div class="slide-inner stagger">
+    <span class="tag tag-blue" style="margin-bottom:10px;">课后任务</span>
+    <h2 style="margin-bottom:8px;">画一张"AI能力进阶画布"</h2>
+    <p style="margin-bottom:4px;color:var(--text-500);font-weight:600;">任务说明：</p>
+    <p style="margin-bottom:20px;color:var(--text-500);">用一张表格规划你的AI学习路径</p>
+    <div class="card-grid card-grid-3" style="margin-bottom:24px;">
+      <div class="card" style="text-align:center;border-top:3px solid var(--blue-500);">
+        <span style="font-size:1.5rem;">1</span>
+        <p style="font-weight:600;color:var(--text-700);margin-top:8px;">评估你的当前能力等级</p>
+      </div>
+      <div class="card" style="text-align:center;border-top:3px solid var(--purple-500);">
+        <span style="font-size:1.5rem;">2</span>
+        <p style="font-weight:600;color:var(--text-700);margin-top:8px;">设定你的目标等级</p>
+      </div>
+      <div class="card" style="text-align:center;border-top:3px solid var(--green-500);">
+        <span style="font-size:1.5rem;">3</span>
+        <p style="font-weight:600;color:var(--text-700);margin-top:8px;">列出具体的行动计划</p>
+      </div>
+    </div>
+    <p style="margin-bottom:12px;font-weight:600;color:var(--text-700);font-size:0.9rem;">画布模板</p>
+    <div style="overflow-x:auto;">
+      <table style="width:100%;border-collapse:collapse;border-radius:var(--radius-sm);overflow:hidden;border:1px solid var(--border);">
+        <thead>
+          <tr style="background:var(--bg-blue);">
+            <th style="padding:12px 16px;text-align:left;font-size:0.85rem;font-weight:700;color:var(--blue-600);border-bottom:1px solid var(--border);">当前能力</th>
+            <th style="padding:12px 16px;text-align:left;font-size:0.85rem;font-weight:700;color:var(--purple-500);border-bottom:1px solid var(--border);">目标能力</th>
+            <th style="padding:12px 16px;text-align:left;font-size:0.85rem;font-weight:700;color:var(--green-500);border-bottom:1px solid var(--border);">行动计划</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td style="padding:10px 16px;font-size:0.85rem;color:var(--text-700);border-bottom:1px solid var(--border-light);">只会聊天 Lv.1</td>
+            <td style="padding:10px 16px;font-size:0.85rem;color:var(--text-700);border-bottom:1px solid var(--border-light);">Lv.2</td>
+            <td style="padding:10px 16px;font-size:0.85rem;color:var(--text-700);border-bottom:1px solid var(--border-light);">完成C2作业</td>
+          </tr>
+          <tr>
+            <td style="padding:10px 16px;font-size:0.85rem;color:var(--text-400);border-bottom:1px solid var(--border-light);">...</td>
+            <td style="padding:10px 16px;font-size:0.85rem;color:var(--text-400);border-bottom:1px solid var(--border-light);">...</td>
+            <td style="padding:10px 16px;font-size:0.85rem;color:var(--text-400);border-bottom:1px solid var(--border-light);">...</td>
+          </tr>
+          <tr>
+            <td style="padding:10px 16px;font-size:0.85rem;color:var(--text-400);border-bottom:1px solid var(--border-light);">...</td>
+            <td style="padding:10px 16px;font-size:0.85rem;color:var(--text-400);border-bottom:1px solid var(--border-light);">...</td>
+            <td style="padding:10px 16px;font-size:0.85rem;color:var(--text-400);border-bottom:1px solid var(--border-light);">...</td>
+          </tr>
+          <tr>
+            <td style="padding:10px 16px;font-size:0.85rem;color:var(--text-400);">...</td>
+            <td style="padding:10px 16px;font-size:0.85rem;color:var(--text-400);">...</td>
+            <td style="padding:10px 16px;font-size:0.85rem;color:var(--text-400);">...</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+  <span class="page-num">21 / 23</span>
+</section>
+
+<!-- ==================== S23: THE END ==================== -->
+<section class="slide" id="s23" style="background:var(--bg-blue);">
+  <div class="deco" style="width:400px;height:400px;background:rgba(59,130,246,0.08);top:-100px;right:-80px;"></div>
+  <div class="deco" style="width:300px;height:300px;background:rgba(147,51,234,0.06);bottom:-60px;left:-60px;"></div>
+  <div class="slide-inner stagger" style="text-align:center;">
+    <h1 style="font-size:clamp(3rem,6vw,5rem);margin-bottom:20px;">The End</h1>
+    <p style="font-size:clamp(1rem,1.5vw,1.2rem);color:var(--text-500);">C1 · Chapter 4 · 我们应该怎么学习AI呢？</p>
+  </div>
+  <span class="page-num">23 / 23</span>
+</section>
+
+<script>
+const nav = document.getElementById('slideNav');
+for (let i = 1; i <= 23; i++) {
+  const a = document.createElement('a');
+  a.href = '#s' + i;
+  a.dataset.slide = i;
+  nav.appendChild(a);
+}
+
+const observer = new IntersectionObserver(entries => {
+  entries.forEach(e => {
+    if (e.isIntersecting) {
+      const id = e.target.id;
+      document.querySelectorAll('.slide-nav a').forEach(a => a.classList.remove('active'));
+      const active = document.querySelector(`.slide-nav a[href="#${id}"]`);
+      if (active) active.classList.add('active');
+    }
+  });
+}, { threshold: 0.5 });
+
+document.querySelectorAll('.slide').forEach(s => observer.observe(s));
+
+document.addEventListener('keydown', e => {
+  const slides = document.querySelectorAll('.slide');
+  const current = [...slides].findIndex(s => {
+    const r = s.getBoundingClientRect();
+    return r.top >= -100 && r.top < window.innerHeight / 2;
+  });
+  if (e.key === 'ArrowDown' || e.key === ' ' || e.key === 'PageDown') {
+    e.preventDefault();
+    if (current < slides.length - 1) slides[current + 1].scrollIntoView({ behavior: 'smooth' });
+  }
+  if (e.key === 'ArrowUp' || e.key === 'PageUp') {
+    e.preventDefault();
+    if (current > 0) slides[current - 1].scrollIntoView({ behavior: 'smooth' });
+  }
+});
+</script>
+</body>
+</html>

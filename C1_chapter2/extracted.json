@@ -1,0 +1,649 @@
+{
+  "total_slides": 23,
+  "slides": [
+    {
+      "slide_num": 1,
+      "texts": [
+        "C1",
+        "必修 · 5节",
+        "AI⼯具与核⼼概念",
+        "从零建立对AI的完整认知",
+        "讲师：陈放"
+      ],
+      "images": [
+        {
+          "name": "图片 13",
+          "file": "images/slide1_图片_13.png",
+          "size": 104658,
+          "content_type": "image/png"
+        }
+      ],
+      "links": [],
+      "media": []
+    },
+    {
+      "slide_num": 2,
+      "texts": [
+        "CHAPTER 2",
+        "AI核心概念一锅端",
+        "AI已经开始替你上班"
+      ],
+      "images": [
+        {
+          "name": "Image 0",
+          "file": "images/slide2_Image_0.png",
+          "size": 1057191,
+          "content_type": "image/png"
+        }
+      ],
+      "links": [],
+      "media": []
+    },
+    {
+      "slide_num": 3,
+      "texts": [
+        "请思考",
+        "上节课的震撼，你记住了几个？",
+        "✓",
+        "写 交付文档包",
+        "✓",
+        "画 海报一次成型",
+        "✓",
+        "拍 15秒成片",
+        "✓",
+        "看 实时理解屏幕",
+        "✓",
+        "编程 不写代码做网页"
+      ],
+      "images": [],
+      "links": [],
+      "media": []
+    },
+    {
+      "slide_num": 4,
+      "texts": [
+        "知其然，知其所有然;",
+        "想要真的用好AI，你还得了解一下基础概念！"
+      ],
+      "images": [
+        {
+          "name": "Image 0",
+          "file": "images/slide4_Image_0.jpg",
+          "size": 11871,
+          "content_type": "image/jpeg"
+        }
+      ],
+      "links": [],
+      "media": []
+    },
+    {
+      "slide_num": 5,
+      "texts": [
+        "先看地图，再走路",
+        "大模型",
+        "核心引擎",
+        "→",
+        "Token",
+        "语言单位",
+        "→",
+        "Prompt",
+        "对话方式",
+        "→",
+        "Agent",
+        "干活形态",
+        "RAG",
+        "加知识",
+        "→",
+        "微调",
+        "加技能",
+        "→",
+        "MCP",
+        "装接口"
+      ],
+      "images": [
+        {
+          "name": "Image 0",
+          "file": "images/slide5_Image_0.jpg",
+          "size": 11531,
+          "content_type": "image/jpeg"
+        },
+        {
+          "name": "Image 0",
+          "file": "images/slide5_Image_0.png",
+          "size": 3522,
+          "content_type": "image/png"
+        },
+        {
+          "name": "Image 1",
+          "file": "images/slide5_Image_1.png",
+          "size": 2469,
+          "content_type": "image/png"
+        },
+        {
+          "name": "Image 2",
+          "file": "images/slide5_Image_2.png",
+          "size": 1752,
+          "content_type": "image/png"
+        },
+        {
+          "name": "Image 3",
+          "file": "images/slide5_Image_3.png",
+          "size": 2503,
+          "content_type": "image/png"
+        },
+        {
+          "name": "Image 4",
+          "file": "images/slide5_Image_4.png",
+          "size": 2747,
+          "content_type": "image/png"
+        },
+        {
+          "name": "Image 5",
+          "file": "images/slide5_Image_5.png",
+          "size": 3366,
+          "content_type": "image/png"
+        },
+        {
+          "name": "Image 6",
+          "file": "images/slide5_Image_6.png",
+          "size": 1480,
+          "content_type": "image/png"
+        }
+      ],
+      "links": [],
+      "media": []
+    },
+    {
+      "slide_num": 6,
+      "texts": [
+        "大模型 = 看过海量文本的超级学霸",
+        "看过海量百科、新闻和论坛内容",
+        "见过大量代码和技术文档",
+        "学过很多书里的表达方式",
+        "擅长从海量文本里总结模式",
+        "但它不是真的理解——它学到的，本质上是语言的模式"
+      ],
+      "images": [
+        {
+          "name": "Image 0",
+          "file": "images/slide6_Image_0.jpg",
+          "size": 11531,
+          "content_type": "image/jpeg"
+        },
+        {
+          "name": "图片 42",
+          "file": "images/slide6_图片_42.jpg",
+          "size": 10224,
+          "content_type": "image/jpeg"
+        }
+      ],
+      "links": [],
+      "media": []
+    },
+    {
+      "slide_num": 7,
+      "texts": [
+        "它不是在\"思考\"——它更像在做下一词预测",
+        "\"今天天气真____\"",
+        "好 68%",
+        "热 22%",
+        "冷 10%",
+        "它每次只做一件事：在已有文字之后，选出最可能的下一个词",
+        "21"
+      ],
+      "images": [],
+      "links": [],
+      "media": []
+    },
+    {
+      "slide_num": 8,
+      "texts": [
+        "别被参数吓住了——你真正该关心的是这4件事",
+        "推理强不强",
+        "逻辑链条是否完整、结论是否可靠",
+        "多模态行不行",
+        "能不能同时处理文字、图片、视频",
+        "会不会调工具",
+        "能不能连接外部系统完成任务",
+        "成本和速度",
+        "响应快不快、费用扛不扛得住"
+      ],
+      "images": [
+        {
+          "name": "Image 0",
+          "file": "images/slide8_Image_0.jpg",
+          "size": 11127,
+          "content_type": "image/jpeg"
+        },
+        {
+          "name": "Image 0",
+          "file": "images/slide8_Image_0.png",
+          "size": 3522,
+          "content_type": "image/png"
+        },
+        {
+          "name": "Image 1",
+          "file": "images/slide8_Image_1.png",
+          "size": 3409,
+          "content_type": "image/png"
+        },
+        {
+          "name": "Image 2",
+          "file": "images/slide8_Image_2.png",
+          "size": 2503,
+          "content_type": "image/png"
+        },
+        {
+          "name": "Image 3",
+          "file": "images/slide8_Image_3.png",
+          "size": 3366,
+          "content_type": "image/png"
+        }
+      ],
+      "links": [],
+      "media": []
+    },
+    {
+      "slide_num": 9,
+      "texts": [
+        "Token = AI处理语言时的一小口信息",
+        "你",
+        "好",
+        "\"你好\" → 1~2 Token",
+        "Hello",
+        "\"Hello\" → 1 Token",
+        "人工",
+        "智能",
+        "\"人工智能\" → 2~3 Token",
+        "$",
+        "Token 决定价格",
+        "用得越多，花得越多",
+        "Token 决定记忆力",
+        "上下文窗口有限",
+        "Tokenizer"
+      ],
+      "images": [
+        {
+          "name": "Image 0",
+          "file": "images/slide9_Image_0.png",
+          "size": 3522,
+          "content_type": "image/png"
+        }
+      ],
+      "links": [
+        {
+          "type": "text",
+          "text": "Tokenizer",
+          "url": "https://www.toolsnak.com/en/ai-token-counter"
+        }
+      ],
+      "media": []
+    },
+    {
+      "slide_num": 10,
+      "texts": [
+        "LIVE DEMO",
+        "现场演示：同一个问题，不同模型的答案",
+        "需求原文",
+        "我现在要给同学讲解什么是大模型，请用通俗易懂的语言来描述，不超过200字",
+        "请计算下 10+20 = 多少？",
+        "翻译：我想去隔壁咖啡馆买一杯拿铁咖啡",
+        "你真的需要最好的大模型吗？"
+      ],
+      "images": [],
+      "links": [],
+      "media": []
+    },
+    {
+      "slide_num": 11,
+      "texts": [
+        "\"你怎么问，决定AI怎么答\""
+      ],
+      "images": [
+        {
+          "name": "Image 0",
+          "file": "images/slide11_Image_0.jpg",
+          "size": 11871,
+          "content_type": "image/jpeg"
+        }
+      ],
+      "links": [],
+      "media": []
+    },
+    {
+      "slide_num": 12,
+      "texts": [
+        "同一个任务，好Prompt vs 坏Prompt",
+        "BAD",
+        "\"帮我写一篇文章，主题是一个胡同里的面馆\"",
+        "没有角色、没有上下文、没有格式要求",
+        "GOOD",
+        "你是一位小红书美食博主，文风活泼有趣。请写一篇300字探店笔记，主题是一家隐藏在胡同里的面馆，要求：开头用悬念吸引人，中间写3个菜品亮点，结尾给出推荐星级。",
+        "有角色、有上下文、有格式"
+      ],
+      "images": [
+        {
+          "name": "Image 0",
+          "file": "images/slide12_Image_0.jpg",
+          "size": 11531,
+          "content_type": "image/jpeg"
+        }
+      ],
+      "links": [],
+      "media": []
+    },
+    {
+      "slide_num": 13,
+      "texts": [
+        "Prompt五要素：RTCFE",
+        "R",
+        "Role",
+        "角色设定",
+        "T",
+        "Task",
+        "具体任务",
+        "C",
+        "Context",
+        "背景信息",
+        "F",
+        "Format",
+        "输出格式",
+        "E",
+        "Examples",
+        "示例参考",
+        "提示词案例：小红书文案生成",
+        "【R - Role】",
+        "你是一位资深的小红书内容运营专家，擅长写爆款笔记，熟悉年轻人喜欢的表达方式。",
+        "【T - Task】",
+        "请为一款新上市的\"降噪蓝牙耳机\"写一篇种草文案。",
+        "【C - Context】",
+        "- 目标用户：25-35岁上班族，经常通勤、需要专注工作",
+        "- 产品卖点：主动降噪、续航30小时、佩戴舒适、音质清晰",
+        "- 调性要求：真实分享感，不硬广，多用emoji，语气亲切",
+        "【F - Format】",
+        "1. 标题（15字以内，带emoji）",
+        "2. 正文（150-200字，分段落）",
+        "3. 标签（5个相关话题标签）",
+        "【E - Example】",
+        "参考风格：",
+        "\"绝了！这个耳机让我地铁上也能专心听歌🎵",
+        "通勤党真的太难了...直到我遇到它！",
+        "降噪效果yyds，地铁轰鸣声直接消失✨\"",
+        "框架的本质就是帮你把话说清楚！"
+      ],
+      "images": [
+        {
+          "name": "Image 0",
+          "file": "images/slide13_Image_0.jpg",
+          "size": 11531,
+          "content_type": "image/jpeg"
+        }
+      ],
+      "links": [],
+      "media": []
+    },
+    {
+      "slide_num": 14,
+      "texts": [
+        "\"Prompt让AI说得好，Agent让AI做得到\"",
+        "💬",
+        "聊天AI = 嘴",
+        "能说、能写、能分析",
+        "但不能动手操作",
+        "✋",
+        "Agent = 手脚",
+        "能操作工具、执行任务",
+        "感知 → 思考 → 行动 → 记忆"
+      ],
+      "images": [
+        {
+          "name": "Image 0",
+          "file": "images/slide14_Image_0.jpg",
+          "size": 11531,
+          "content_type": "image/jpeg"
+        }
+      ],
+      "links": [],
+      "media": []
+    },
+    {
+      "slide_num": 15,
+      "texts": [
+        "Agent能做什么？用\"订高铁+开发票\"看懂",
+        "传统聊天AI",
+        "\"帮我订一张明早去上海的高铁\"",
+        "\"你可以去12306查询并下单...\"",
+        "（只能告诉你怎么做）",
+        "Agent",
+        "1",
+        "搜索所有车次和价格",
+        "2",
+        "按你的时间偏好筛选排序",
+        "3",
+        "完成下单并同步行程",
+        "4",
+        "提醒你及时开发票"
+      ],
+      "images": [
+        {
+          "name": "Image 0",
+          "file": "images/slide15_Image_0.jpg",
+          "size": 11531,
+          "content_type": "image/jpeg"
+        }
+      ],
+      "links": [],
+      "media": []
+    },
+    {
+      "slide_num": 16,
+      "texts": [
+        "变成AI Agent，需要点什么？"
+      ],
+      "images": [
+        {
+          "name": "Image 0",
+          "file": "images/slide16_Image_0.jpg",
+          "size": 11871,
+          "content_type": "image/jpeg"
+        }
+      ],
+      "links": [],
+      "media": []
+    },
+    {
+      "slide_num": 17,
+      "texts": [
+        "RAG = 给AI配一个会检索的图书馆",
+        "检索",
+        "Retrieval",
+        "→",
+        "增强",
+        "Augmentation",
+        "→",
+        "生成",
+        "Generation",
+        "类比：开卷考试。模型本身是学霸，RAG让它带着参考书答题。",
+        "解决幻觉",
+        "答案有据可查",
+        "解决过时",
+        "实时检索最新数据",
+        "解决专业",
+        "接入企业私有知识"
+      ],
+      "images": [
+        {
+          "name": "Image 0",
+          "file": "images/slide17_Image_0.jpg",
+          "size": 11531,
+          "content_type": "image/jpeg"
+        },
+        {
+          "name": "Image 0",
+          "file": "images/slide17_Image_0.png",
+          "size": 2747,
+          "content_type": "image/png"
+        },
+        {
+          "name": "Image 1",
+          "file": "images/slide17_Image_1.png",
+          "size": 1480,
+          "content_type": "image/png"
+        },
+        {
+          "name": "Image 2",
+          "file": "images/slide17_Image_2.png",
+          "size": 3522,
+          "content_type": "image/png"
+        }
+      ],
+      "links": [],
+      "media": []
+    },
+    {
+      "slide_num": 18,
+      "texts": [
+        "微调 = 把通才训练成专才",
+        "🎓",
+        "通才",
+        "什么都知道一点",
+        "→",
+        "你的数据",
+        "Fine-tuning",
+        "💼",
+        "专才",
+        "你的领域它最懂",
+        "+40%",
+        "专业术语准确率",
+        "-60%",
+        "格式错误率",
+        "3x",
+        "用户满意度"
+      ],
+      "images": [
+        {
+          "name": "Image 0",
+          "file": "images/slide18_Image_0.jpg",
+          "size": 11531,
+          "content_type": "image/jpeg"
+        }
+      ],
+      "links": [],
+      "media": []
+    },
+    {
+      "slide_num": 19,
+      "texts": [
+        "MCP = AI的USB-C接口",
+        "MCP",
+        "企业微信",
+        "钉钉",
+        "飞书",
+        "WPS",
+        "Database",
+        "Files",
+        "AI 与外部世界的交流口",
+        "统一接口，即插即用"
+      ],
+      "images": [
+        {
+          "name": "Image 0",
+          "file": "images/slide19_Image_0.jpg",
+          "size": 11531,
+          "content_type": "image/jpeg"
+        },
+        {
+          "name": "图片 46",
+          "file": "images/slide19_图片_46.png",
+          "size": 421231,
+          "content_type": "image/png"
+        }
+      ],
+      "links": [],
+      "media": []
+    },
+    {
+      "slide_num": 20,
+      "texts": [
+        "7个概念，一张图串起来",
+        "大模型",
+        "LLM",
+        "Token",
+        "语言单位",
+        "Prompt",
+        "指令",
+        "Agent",
+        "手脚",
+        "RAG",
+        "图书馆",
+        "微调",
+        "培训班",
+        "MCP",
+        "接口"
+      ],
+      "images": [
+        {
+          "name": "Image 0",
+          "file": "images/slide20_Image_0.jpg",
+          "size": 11531,
+          "content_type": "image/jpeg"
+        },
+        {
+          "name": "图片 46",
+          "file": "images/slide20_图片_46.png",
+          "size": 152104,
+          "content_type": "image/png"
+        }
+      ],
+      "links": [],
+      "media": []
+    },
+    {
+      "slide_num": 21,
+      "texts": [
+        "\"概念讲清楚了——下节课看看谁更适合上场\"",
+        "课后作业",
+        "用自己的话，给朋友/同事解释今天学的7个概念中的任意3个。写成文字发到课程群。",
+        "要求：用类比，不用术语"
+      ],
+      "images": [],
+      "links": [],
+      "media": []
+    },
+    {
+      "slide_num": 22,
+      "texts": [
+        "“有人说，当模型做到足够强大的时候；",
+        "所有的AI Agent都会变得多余”",
+        "下节预告：2026大模型擂台赛。Kimi 2.5 / MiniMax 2.7 / Claude 4.7 / GPT 5.4 / 豆包AI / DeepSeek"
+      ],
+      "images": [
+        {
+          "name": "Image 0",
+          "file": "images/slide22_Image_0.jpg",
+          "size": 11871,
+          "content_type": "image/jpeg"
+        }
+      ],
+      "links": [],
+      "media": []
+    },
+    {
+      "slide_num": 23,
+      "texts": [
+        "The End"
+      ],
+      "images": [
+        {
+          "name": "Image 0",
+          "file": "images/slide23_Image_0.png",
+          "size": 1057191,
+          "content_type": "image/png"
+        }
+      ],
+      "links": [],
+      "media": []
+    }
+  ],
+  "video_files": []
+}
